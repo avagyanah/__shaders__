@@ -1,0 +1,20 @@
+export const assets = {
+    images: {
+        bg: require('../assets/images/bg.jpg'),
+    },
+
+    shaders: {
+        default: {
+            vert: require('../assets/shaders/default/vert.glsl'),
+            frag: require('../assets/shaders/default/frag.glsl'),
+        },
+        alpha1: {
+            vert: require('../assets/shaders/alpha1/vert.glsl'),
+            frag: require('../assets/shaders/alpha1/frag.glsl'),
+        },
+        erase1: {
+            vert: require('../assets/shaders/erase1/vert.glsl'),
+            frag: require('../assets/shaders/erase1/frag.glsl'),
+        },
+    },
+};

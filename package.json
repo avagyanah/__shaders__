@@ -13,7 +13,9 @@
         "lint": "npm run lint -ws",
         "start:alpha": "npm run start -w alpha",
         "start:color": "npm run start -w color",
-        "start:blur": "npm run start -w blur"
+        "start:blur": "npm run start -w blur",
+        "start:offset": "npm run start -w offset",
+        "start:erase": "npm run start -w erase"
     },
     "devDependencies": {
         "@types/three": "^0.152.1",
