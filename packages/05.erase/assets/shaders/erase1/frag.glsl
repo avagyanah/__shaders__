@@ -8,10 +8,7 @@ void main(void){
     vec4 color=texture2D(uSampler,vTextureCoord);
     
     if(color.rgb==vec3(1.)*color.a){
-        float alpha=0.;
-        color.r=alpha;
-        color.g=alpha;
-        color.b=alpha;
+        color*=0.;
     }
     
     gl_FragColor=color;

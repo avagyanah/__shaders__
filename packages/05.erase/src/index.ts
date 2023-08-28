@@ -34,7 +34,7 @@ class App extends PixiApp {
         {
             const vert = assets.shaders.alpha1.vert;
             const frag = assets.shaders.alpha1.frag;
-            const uniforms = { u_alpha: 0.5 };
+            const uniforms = { u_alpha: 0.3 };
             const filter = new Filter(vert, frag, uniforms);
             filter.resolution = getResolution();
             filters.push(filter);
