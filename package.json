@@ -15,7 +15,8 @@
         "start:color": "npm run start -w color",
         "start:blur": "npm run start -w blur",
         "start:offset": "npm run start -w offset",
-        "start:erase": "npm run start -w erase"
+        "start:erase": "npm run start -w erase",
+        "start:trail": "npm run start -w trail"
     },
     "devDependencies": {
         "@types/three": "^0.152.1",

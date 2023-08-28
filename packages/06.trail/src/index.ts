@@ -1,5 +1,6 @@
 import { Container, Filter, Sprite } from 'pixi.js';
 import { PixiApp, centralize } from '../../../shared/pixi';
+import { getResolution } from '../../../shared/utils';
 import { assets } from './assets';
 
 window.addEventListener('load', () => {
@@ -14,21 +15,22 @@ class App extends PixiApp {
         centralize(container);
 
         const bg1 = Sprite.from(assets.images.bg);
+        // const bg1 = Sprite.from(Texture.WHITE);
+        bg1.width = 500;
+        bg1.height = 500;
         bg1.anchor.set(0.5);
 
         container.addChild(bg1);
 
         const filters = [];
 
-        // simple blur
+        // trail 1
         {
-            const vert = assets.shaders.default.vert;
-            const frag = assets.shaders.blur1.frag;
-            const uniforms = {};
-
+            const vert = assets.shaders.trail1.vert;
+            const frag = assets.shaders.trail1.frag;
+            const uniforms = { u_alpha: 0.3 };
             const filter = new Filter(vert, frag, uniforms);
-            filter.resolution = 0.05;
-            filter.padding = 100;
+            filter.resolution = getResolution();
             filters.push(filter);
         }
 

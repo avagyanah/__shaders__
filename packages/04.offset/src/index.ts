@@ -19,6 +19,8 @@ class App extends PixiApp {
 
         container.addChild(bg1);
 
+        const filters = [];
+
         //
         {
             const { width, height } = this.renderer.screen;
@@ -30,7 +32,9 @@ class App extends PixiApp {
             };
 
             const filter = new Filter(vert, frag, uniforms);
-            container.filters = [filter];
+            filters.push(filter);
         }
+
+        container.filters = filters;
     }
 }

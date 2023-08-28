@@ -18,6 +18,8 @@ class App extends PixiApp {
 
         container.addChild(bg1);
 
+        const filters = [];
+
         // color 1
         {
             const vert = assets.shaders.default.vert;
@@ -31,7 +33,9 @@ class App extends PixiApp {
             });
 
             const filter = new Filter(vert, frag, uniforms);
-            container.filters = [filter];
+            filters.push(filter);
         }
+
+        container.filters = filters;
     }
 }
