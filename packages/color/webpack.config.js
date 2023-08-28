@@ -45,7 +45,7 @@ module.exports = () => {
 
         plugins: [
             new HtmlWebpackPlugin({
-                template: path.resolve('html', 'index.html'),
+                template: path.resolve('index.html'),
             }),
         ],
 

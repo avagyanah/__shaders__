@@ -18,19 +18,15 @@ class App extends PixiApp {
 
         container.addChild(bg1);
 
-        // color 1
+        // simple blur
         {
             const vert = assets.shaders.default.vert;
-            const frag = assets.shaders.color1.frag;
-            const uniforms = { u_r: 0.0, u_g: 1.0, u_b: 1.0, u_a: 1.0 };
-
-            let red = 0;
-            setInterval(() => {
-                red += 0.005;
-                uniforms.u_r = Math.abs(Math.sin(red));
-            });
+            const frag = assets.shaders.blur1.frag;
+            const uniforms = {};
 
             const filter = new Filter(vert, frag, uniforms);
+            filter.resolution = 0.05;
+            filter.padding = 100;
             container.filters = [filter];
         }
     }

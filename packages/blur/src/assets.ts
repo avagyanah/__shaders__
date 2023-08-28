@@ -8,8 +8,8 @@ export const assets = {
             vert: require('../assets/shaders/default/vert.glsl'),
             frag: require('../assets/shaders/default/frag.glsl'),
         },
-        alpha1: {
-            frag: require('../assets/shaders/alpha1/frag.glsl'),
+        blur1: {
+            frag: require('../assets/shaders/blur1/frag.glsl'),
         },
     },
 };

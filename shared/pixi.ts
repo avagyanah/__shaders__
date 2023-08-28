@@ -1,10 +1,8 @@
+import type { DisplayObject } from 'pixi.js';
 import { Application } from 'pixi.js';
-import { PixiStage } from './pixi-stage';
 import { getElementById, getResolution } from './utils';
 
-export class PixiApp extends Application {
-    public declare stage: PixiStage;
-
+export abstract class PixiApp extends Application {
     public constructor() {
         super({
             sharedTicker: true,
@@ -14,21 +12,20 @@ export class PixiApp extends Application {
             view: <HTMLCanvasElement>getElementById('game_canvas'),
         });
 
-        this.stage = new PixiStage();
-
-        window.addEventListener('orientationchange', this._resize);
-        window.addEventListener('resize', this._resize);
-
-        this._resize();
+        window.addEventListener('resize', this.resize);
+        this.resize();
     }
 
-    public init(): void {
-        this.stage.init();
-    }
-
-    private _resize = (): void => {
+    public resize = (): void => {
         const { innerWidth, innerHeight } = window;
-
         this.renderer.resize(innerWidth, innerHeight);
     };
+
+    public abstract init(): void;
+}
+
+export function centralize(obj: DisplayObject): void {
+    const { width, height } = window.globals.pixiApp.renderer.screen;
+
+    obj.position.set(width / 2, height / 2);
 }

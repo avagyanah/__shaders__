@@ -1,7 +1,7 @@
 {
     "extends": "../../tsconfig.json",
 
-    "include": ["src", "../../globals.d.ts"],
+    "include": ["src", "../../shared", "../../globals.d.ts"],
     "exclude": [],
 
     "compilerOptions": {
