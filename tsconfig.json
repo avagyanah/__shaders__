@@ -1,0 +1,21 @@
+{
+    "exclude": ["node_modules", "dist"],
+
+    "compilerOptions": {
+        "strict": false,
+        "skipLibCheck": true,
+
+        "allowJs": true,
+        "resolveJsonModule": true,
+
+        "target": "ESNext",
+        "module": "ESNext",
+
+        "moduleResolution": "Node",
+        "esModuleInterop": true,
+
+        "declaration": true,
+        "removeComments": true,
+        "noEmit": true
+    }
+}
