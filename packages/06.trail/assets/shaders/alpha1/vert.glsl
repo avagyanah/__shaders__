@@ -1,7 +1,6 @@
 attribute vec2 aVertexPosition;
 attribute vec2 aTextureCoord;
 attribute vec2 aUvs;
-attribute vec4 aColor;
 
 uniform mat3 projectionMatrix;
 
