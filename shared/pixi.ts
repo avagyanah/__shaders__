@@ -1,4 +1,4 @@
-import type { Container, DisplayObject, Geometry } from 'pixi.js';
+import type { Container, DisplayObject, Mesh, MeshMaterial, Shader } from 'pixi.js';
 import { Application, Graphics, Ticker } from 'pixi.js';
 import { getElementById, getResolution } from './utils';
 
@@ -31,7 +31,7 @@ export function centralize(obj: DisplayObject): void {
 }
 
 export function drawVertices(
-    geom: Geometry,
+    mesh: Mesh<Shader | MeshMaterial>,
     obj: Container,
     drawVertices = true,
     drawFaces = true,
@@ -40,14 +40,27 @@ export function drawVertices(
     const gr = new Graphics();
     obj.addChild(gr);
 
-    const verts = geom.getBuffer('aVertexPosition').data as Float32Array;
-    const indeces = geom.indexBuffer.data as Uint16Array;
+    let verts: Float32Array;
+    let indeces: Uint16Array;
 
-    Ticker.shared.add(() => {
+    mesh.on('destroyed', () => {
+        Ticker.shared.remove(loop);
+        gr.destroy();
+    });
+
+    const loop = (): void => {
+        const geom = mesh.geometry;
+
         gr.clear();
+
+        verts = geom.getBuffer('aVertexPosition').data as Float32Array;
+        indeces = geom.indexBuffer.data as Uint16Array;
+
         drawFacesFn();
         drawVerticesFn();
-    });
+    };
+
+    Ticker.shared.add(loop);
 
     const drawFacesFn = (): void => {
         // faces
@@ -96,7 +109,4 @@ export function drawVertices(
             gr.endFill();
         }
     };
-
-    drawFacesFn();
-    drawVerticesFn();
 }

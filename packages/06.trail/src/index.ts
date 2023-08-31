@@ -47,7 +47,7 @@ class App extends PixiApp {
 
             for (let i = 0; i < points.length; i++) {
                 points[i].y = Math.sin(i * 0.5 + count) * 30;
-                points[i].x = i * 120 + Math.cos(i * 0.3 + count) * 20;
+                // points[i].x = i * 120 + Math.cos(i * 0.3 + count) * 20;
             }
 
             geom.update();
