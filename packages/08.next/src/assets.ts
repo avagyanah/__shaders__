@@ -12,9 +12,10 @@ export const assets = {
             vert: require('../assets/shaders/default/vert.glsl'),
             frag: require('../assets/shaders/default/frag.glsl'),
         },
-        mesh: {
-            vert: require('../assets/shaders/mesh/vert.glsl'),
-            frag: require('../assets/shaders/mesh/frag.glsl'),
+
+        next: {
+            vert: require('../assets/shaders/next/vert.glsl'),
+            frag: require('../assets/shaders/next/frag.glsl'),
         },
     },
 };

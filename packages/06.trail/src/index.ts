@@ -36,22 +36,20 @@ class App extends PixiApp {
         const geom = new RopeGeometry(80, points);
         const plane = new Mesh(geom, shader);
         // const plane = new SimpleRope(Texture.from(assets.images.snake), points);
-        drawVertices(plane.geometry, plane, true, true);
+        drawVertices(plane, plane, true, true);
         container.addChild(plane);
 
         let count = 0;
 
         Ticker.shared.add(() => {
-            // setInterval(() => {
             count += 0.1;
 
             for (let i = 0; i < points.length; i++) {
-                points[i].y = Math.sin(i * 0.5 + count) * 30;
+                points[i].y = Math.sin(i * 0.5 + count) * 20;
                 // points[i].x = i * 120 + Math.cos(i * 0.3 + count) * 20;
             }
 
             geom.update();
-            // }, 16.6);
         });
 
         // for (let i = 0; i < points.length; i++) {

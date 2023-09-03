@@ -17,7 +17,8 @@
         "start:offset": "npm run start -w offset",
         "start:erase": "npm run start -w erase",
         "start:trail": "npm run start -w trail",
-        "start:displacement": "npm run start -w displacement"
+        "start:glow": "npm run start -w glow",
+        "start:next": "npm run start -w next"
     },
     "devDependencies": {
         "@types/three": "^0.152.1",
