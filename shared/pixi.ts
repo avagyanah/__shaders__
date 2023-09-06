@@ -8,6 +8,7 @@ export abstract class PixiApp extends Application {
             sharedTicker: true,
             backgroundAlpha: 1,
             backgroundColor: 0x343434,
+            // backgroundColor: 0x1099bb,
             resolution: getResolution(),
             view: <HTMLCanvasElement>getElementById('game_canvas'),
         });
@@ -104,7 +105,7 @@ export function drawVertices(
                     gr.moveTo(vx, vy);
                 }
                 gr.beginFill(0xff0101, 1);
-                gr.drawCircle(vx, vy, 5);
+                gr.drawCircle(vx, vy, 1);
             }
             gr.endFill();
         }

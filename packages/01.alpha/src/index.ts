@@ -25,13 +25,9 @@ class App extends PixiApp {
             const vert = assets.shaders.default.vert;
             const frag = assets.shaders.alpha1.frag;
             const uniforms = { u_alpha: 1 };
-
-            let alpha = 1;
             setInterval(() => {
-                alpha += 0.005;
-                uniforms.u_alpha = Math.abs(Math.sin(alpha));
+                uniforms.u_alpha += 0.005;
             });
-
             const filter = new Filter(vert, frag, uniforms);
             filters.push(filter);
         }

@@ -18,43 +18,30 @@ class App extends PixiApp {
         container.addChild(disp);
         //
 
-        const vert = assets.shaders.next.vert;
-        const frag = assets.shaders.next.frag;
+        const vert = assets.shaders.alpha1.vert;
+        const frag = assets.shaders.alpha1.frag;
 
         // UNIFORMS
         const uniforms = {
             uSampler: Texture.from(assets.images.bg),
-            u_resolution: { x: window.innerWidth, y: window.innerHeight },
-            u_time: performance.now(),
-            u_mouse: [0, 0],
         };
-
-        document.onmousemove = (event) => {
-            uniforms.u_mouse[0] = event.pageX;
-            uniforms.u_mouse[1] = event.pageY;
-        };
-
-        window.addEventListener('resize', () => {
-            uniforms.u_resolution.x = this.renderer.width;
-            uniforms.u_resolution.y = this.renderer.height;
-        });
-
-        setInterval(() => {
-            uniforms.u_time = performance.now();
-        });
-        // -------------
 
         const width = 500;
         const height = 500;
-
         const geometry = new PlaneGeometry(width, height, 2, 2);
+        const alphaArr = [1, 0, 0, 0];
+        geometry.addAttribute('aAlpha', alphaArr, 1);
         const material = Shader.from(vert, frag, uniforms);
         const mesh = new Mesh(geometry, material);
         mesh.pivot.set(mesh.width * 0.5, mesh.height * 0.5);
 
+        const alphaBuffer = geometry.getBuffer('aAlpha');
+        alphaArr[1] = 1;
+        alphaBuffer.update(alphaArr);
+
         //
         container.addChild(mesh);
-        drawVertices(mesh, mesh, true, true);
+        drawVertices(mesh, mesh, false, false);
         container.position.set(window.innerWidth * 0.5, window.innerHeight * 0.5);
     }
 }

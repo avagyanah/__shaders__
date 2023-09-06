@@ -12,6 +12,7 @@
     "scripts": {
         "lint": "npm run lint -ws",
         "start:alpha": "npm run start -w alpha",
+        "start:alpha2": "npm run start -w alpha2",
         "start:color": "npm run start -w color",
         "start:blur": "npm run start -w blur",
         "start:offset": "npm run start -w offset",

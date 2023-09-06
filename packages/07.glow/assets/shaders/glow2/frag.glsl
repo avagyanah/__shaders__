@@ -19,8 +19,7 @@ void main(){
     float angle=atan(pt.y,pt.x);
     float radius=length(pt);
     float alpha=1.-pow(radius*2.,u_intensity);
-    
-    float traction=step(u_gap,fract(atan(pt.y,pt.x)/TAU*u_count));
+    float traction=step(u_gap,fract((angle/TAU)*u_count));
     
     gl_FragColor=u_color*alpha*traction;
 }
