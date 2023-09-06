@@ -3,6 +3,8 @@ import { PixiApp, drawVertices } from '../../../shared/pixi';
 import { assets } from './assets';
 import { Trail } from './trail';
 
+// GeometrySystem.prototype.checkCompatibility = function () {};
+
 window.addEventListener('load', () => {
     window.globals = { pixiApp: new App() };
     window.globals.pixiApp.init();
@@ -13,21 +15,24 @@ class App extends PixiApp {
         const container = new Container();
         this.stage.addChild(container);
 
-        const vertSrc = assets.shaders.next2.vert;
-        const fragSrc = assets.shaders.next2.frag;
+        const vertSrc = assets.shaders.next1.vert;
+        const fragSrc = assets.shaders.next1.frag;
         const geom = new RopeGeometry(50, [
             //
             new Point(0, 0),
             new Point(50, 0),
             new Point(100, 0),
-            new Point(150, 0),
-            new Point(200, 0),
-            new Point(250, 0),
+            new Point(150, -100),
+            new Point(250, -110),
+            new Point(300, -90),
+            // new Point(150, 0),
+            // new Point(200, 0),
+            // new Point(250, 0),
             // new Point(300, 0),
             // new Point(350, 0),
             // new Point(400, 0),
         ]);
-        const mesh = new Mesh(geom, Shader.from(vertSrc, fragSrc, { uSampler: Texture.from(assets.images.treadmill) }));
+        const mesh = new Mesh(geom, Shader.from(vertSrc, fragSrc, { uSampler: Texture.from(assets.images.bg) }));
         // const mesh = new Mesh(geom, Shader.from(vertSrc, fragSrc, { uSampler: Texture.WHITE }));
         mesh.position.set(200, 600);
         drawVertices(mesh, mesh, true, false);
@@ -67,14 +72,31 @@ class App extends PixiApp {
         // }, 400);
 
         //
-        const trail = new Trail(Texture.from(assets.images.treadmill), 50);
-        // trail.position.set(200, 200);
+        const trail = new Trail(Texture.from(assets.images.bg), 50);
+        drawVertices(trail, trail, true, false);
+
+        trail.position.set(200, 300);
 
         // trail.pivot.set(trail.width * 0.5, trail.height * 0.5);
         container.addChild(trail);
-        drawVertices(trail, trail, false, false);
+        // drawVertices(trail, trail, true, false);
 
-        // trail.setOrigin(0, 0);
+        trail.setOrigin(0, 0);
+        trail.addPoint(50, 0);
+        trail.addPoint(100, 0);
+        trail.addPoint(150, -100);
+        trail.addPoint(250, -110);
+        trail.addPoint(300, -90);
+
+        // trail.addPoint(300, 100);
+        // trail.addPoint(0, 200);
+        // trail.addPoint(-100, 100);
+
+        // trail.addPoint(100, 0);
+        // trail.addPoint(200, 100);
+        // trail.addPoint(0, 200);
+        // trail.addPoint(-100, 100);
+
         // trail.addPoint(50, 0);
         // trail.addPoint(100, 0);
         // trail.addPoint(150, 0);
@@ -84,15 +106,33 @@ class App extends PixiApp {
         // trail.addPoint(350, 0);
         // trail.addPoint(400, 0);
 
-        let moved = false;
-        document.onmousemove = (event) => {
-            if (!moved) {
-                trail.setOrigin(event.pageX, event.pageY);
-            } else {
-                trail.addPoint(event.pageX, event.pageY);
-            }
-            moved = true;
-        };
+        // const buffer = trail.geometry.getBuffer('aVertexPosition');
+        // const verts = trail.geometry.getBuffer('aVertexPosition').data;
+        // const newVerts = Float32Array.from(verts);
+
+        // newVerts[8] = verts[8] + 25;
+        // newVerts[9] = verts[9] + 25;
+
+        // newVerts[10] = verts[10] + 25;
+        // newVerts[11] = verts[11] + 25;
+
+        // buffer.update(newVerts);
+        // trail.addPoint(150, 0);
+        // trail.addPoint(200, 0);
+        // trail.addPoint(250, 0);
+        // trail.addPoint(300, 0);
+        // trail.addPoint(350, 0);
+        // trail.addPoint(400, 0);
+
+        // let moved = false;
+        // document.onmousemove = (event) => {
+        //     if (!moved) {
+        //         trail.setOrigin(event.pageX, event.pageY);
+        //     } else {
+        //         trail.addPoint(event.pageX, event.pageY);
+        //     }
+        //     moved = true;
+        // };
 
         // setInterval(() => {
         //     trail.removePoint();
@@ -103,8 +143,8 @@ class App extends PixiApp {
             // console.warn(trail.geometry.getBuffer('aVertexPosition').data);
             // console.warn(mesh.geometry.getBuffer('aTextureCoord').data);
             // console.warn(trail.geometry.getBuffer('aTextureCoord').data);
-            console.warn(trail.geometry.getIndex().data);
-            console.warn(mesh.geometry.getIndex().data);
+            // console.warn(trail.geometry.getIndex().data);
+            // console.warn(mesh.geometry.getIndex().data);
         }
 
         // let moved = false;

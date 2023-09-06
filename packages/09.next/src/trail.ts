@@ -2,12 +2,8 @@ import type { Texture } from 'pixi.js';
 import { Mesh, MeshGeometry, Program, Shader, TYPES } from 'pixi.js';
 import { assets } from './assets';
 
-const vertSrc = assets.shaders.next2.vert;
-const fragSrc = assets.shaders.next2.frag;
-
-interface ITrailUniforms {
+interface ITrailUniforms extends Record<string, any> {
     uSampler: Texture;
-    uDeltaTime: number;
 }
 
 export class Trail extends Mesh<Shader> {
@@ -16,8 +12,11 @@ export class Trail extends Mesh<Shader> {
     protected $mat!: TrailMaterial;
 
     public constructor(texture: Texture, width: number) {
-        super(new TrailGeometry(width), new TrailMaterial({ uSampler: texture, uDeltaTime: 0 }));
+        const uniforms: ITrailUniforms = { uSampler: texture };
 
+        super(new TrailGeometry(width, uniforms), new TrailMaterial(uniforms));
+
+        this.$uniforms = uniforms;
         this.$geom = this.geometry as TrailGeometry;
         this.$mat = this.material as TrailMaterial;
     }
@@ -35,26 +34,21 @@ export class Trail extends Mesh<Shader> {
     }
 
     public update(dt: number): void {
-        this.$uniforms.uDeltaTime = dt;
+        //
     }
 }
 
 class TrailGeometry extends MeshGeometry {
-    private _points: number[] = [];
+    private _points: number[] = [0, 0];
 
-    public constructor(private readonly _width: number) {
-        super(
-            //
-            new Float32Array(0),
-            new Float32Array(0),
-            new Uint16Array(0)
-        );
+    public constructor(private readonly _width: number, private readonly _uniforms: ITrailUniforms) {
+        super(new Float32Array(0), new Float32Array(0), new Uint16Array(0));
 
-        this.addAttribute('aVertexAngle', new Float32Array(), 1, false, TYPES.FLOAT);
+        this.addAttribute('aVertexNeighbors', new Float32Array(0), 4, false, TYPES.FLOAT);
     }
 
     public setOrigin(x: number, y: number): void {
-        this._points.push(x, y);
+        this._points = [x, y];
     }
 
     public removePoint(): void {
@@ -62,8 +56,7 @@ class TrailGeometry extends MeshGeometry {
             return;
         }
 
-        this._points.shift();
-        this._points.shift();
+        this._points.splice(0, 2);
 
         this._update();
     }
@@ -80,52 +73,86 @@ class TrailGeometry extends MeshGeometry {
             return;
         }
 
-        const vertexBuffer = this.getBuffer('aVertexPosition');
+        const vertexNeighborsBuffer = this.getBuffer('aVertexNeighbors');
+        const vertexPositionBuffer = this.getBuffer('aVertexPosition');
         const uvsBuffer = this.getBuffer('aTextureCoord');
         const indexBuffer = this.getIndex();
 
-        const vertices = new Float32Array(l * 2 * 2);
-        const uvs = new Float32Array(l * 2 * 2);
+        const vertexNeighbors = new Float32Array(l * 2 * 2 * 2).fill(1);
+        const vertexPosition = new Float32Array(l * 2 * 2);
         const indices = new Uint16Array((l - 1) * 2 * 3);
+        const uvs = new Float32Array(l * 2 * 2);
 
         // #vertices
-        const vl = vertices.length / 2;
-        for (let i = 0; i < vl; i += 2) {
-            const x = this._points[i];
-            const y = this._points[i + 1];
+        {
+            const vl = vertexPosition.length / 2;
+            for (let i = 0; i < vl; i += 2) {
+                const index = i * 2;
 
-            vertices[i * 2 + 0] = x;
-            vertices[i * 2 + 1] = y - 10;
-            vertices[i * 2 + 2] = x;
-            vertices[i * 2 + 3] = y + 10;
+                const x = this._points[i];
+                const y = this._points[i + 1];
+
+                vertexPosition[index + 0] = x;
+                vertexPosition[index + 1] = y - 25;
+                vertexPosition[index + 2] = x;
+                vertexPosition[index + 3] = y + 25;
+            }
         }
 
+        // const nl = vertexNeighbors.length / 2;
+        // for (let i = 0; i < nl; i += 2) {
+        //     //
+        // }
+        // console.warn(l, vl, nl);
+
         // #uvs
-        const ul = uvs.length / 2;
-        for (let i = 0; i < ul; i += 2) {
-            const uv = i / (ul - 2);
-            uvs[i * 2 + 0] = uv;
-            uvs[i * 2 + 1] = 0;
-            uvs[i * 2 + 2] = uv;
-            uvs[i * 2 + 3] = 1;
+        {
+            const ul = uvs.length / 2;
+            for (let i = 0; i < ul; i += 2) {
+                const index = i * 2;
+                const uv = i / (ul - 2);
+
+                uvs[index + 0] = uv;
+                uvs[index + 1] = 0;
+                uvs[index + 2] = uv;
+                uvs[index + 3] = 1;
+            }
         }
 
         // #indices
-        const il = indices.length;
-        for (let i = 0; i < il; i += 3) {
-            indices[i + 0] = i / 3 + 0;
-            indices[i + 1] = i / 3 + 1;
-            indices[i + 2] = i / 3 + 2;
+        {
+            const il = indices.length;
+            for (let i = 0; i < il; i += 3) {
+                const index = i / 3;
+
+                indices[i + 0] = index + 0;
+                indices[i + 1] = index + 1;
+                indices[i + 2] = index + 2;
+            }
         }
 
-        vertexBuffer.update(vertices);
+        // #update
+        vertexNeighborsBuffer.update(vertexNeighbors);
+        vertexPositionBuffer.update(vertexPosition);
         indexBuffer.update(indices);
         uvsBuffer.update(uvs);
     }
 }
 
+const vertSrc = assets.shaders.next2.vert;
+const fragSrc = assets.shaders.next2.frag;
+
 class TrailMaterial extends Shader {
-    public constructor(uniforms: ITrailUniforms) {
-        super(new Program(vertSrc, fragSrc), uniforms);
+    public constructor(private readonly _uniforms: ITrailUniforms) {
+        super(new Program(vertSrc, fragSrc), _uniforms);
     }
 }
+
+// class TrailMaterial extends MeshMaterial {
+//     public constructor(private readonly _uniforms: ITrailUniforms) {
+//         super(Texture.WHITE, {
+//             program: new Program(vertSrc, fragSrc),
+//             uniforms: _uniforms,
+//         });
+//     }
+// }
