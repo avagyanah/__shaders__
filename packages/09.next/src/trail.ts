@@ -4,6 +4,8 @@ import { assets } from './assets';
 
 interface ITrailUniforms extends Record<string, any> {
     uSampler: Texture;
+    uWidth: number;
+    uNodes: number;
 }
 
 export class Trail extends Mesh<Shader> {
@@ -12,7 +14,7 @@ export class Trail extends Mesh<Shader> {
     protected $mat!: TrailMaterial;
 
     public constructor(texture: Texture, width: number) {
-        const uniforms: ITrailUniforms = { uSampler: texture };
+        const uniforms: ITrailUniforms = { uSampler: texture, uWidth: width, uNodes: 0 };
 
         super(new TrailGeometry(width, uniforms), new TrailMaterial(uniforms));
 
@@ -44,11 +46,13 @@ class TrailGeometry extends MeshGeometry {
     public constructor(private readonly _width: number, private readonly _uniforms: ITrailUniforms) {
         super(new Float32Array(0), new Float32Array(0), new Uint16Array(0));
 
+        this.addAttribute('aVertexIndex', new Uint32Array(0), 1, false, TYPES.FLOAT);
         this.addAttribute('aVertexNeighbors', new Float32Array(0), 4, false, TYPES.FLOAT);
     }
 
     public setOrigin(x: number, y: number): void {
         this._points = [x, y];
+        this._uniforms.uNodes = 1;
     }
 
     public removePoint(): void {
@@ -68,73 +72,90 @@ class TrailGeometry extends MeshGeometry {
     }
 
     private _update(): void {
-        const l = this._points.length / 2;
-        if (l < 2) {
+        const pp = this._points;
+
+        const l = pp.length;
+        if (l < 4) {
             return;
         }
 
+        this._uniforms.uNodes = l / 2;
+
         const vertexNeighborsBuffer = this.getBuffer('aVertexNeighbors');
+        const vn = new Float32Array(l * 2 * 2);
+
         const vertexPositionBuffer = this.getBuffer('aVertexPosition');
+        const vp = new Float32Array(l * 2);
+
+        const vertexIndexBuffer = this.getBuffer('aVertexIndex');
+        const vi = new Float32Array(l);
+
         const uvsBuffer = this.getBuffer('aTextureCoord');
+        const uvs = new Float32Array(l * 2);
+
         const indexBuffer = this.getIndex();
+        const faces = new Uint16Array((l - 2) * 3);
 
-        const vertexNeighbors = new Float32Array(l * 2 * 2 * 2).fill(1);
-        const vertexPosition = new Float32Array(l * 2 * 2);
-        const indices = new Uint16Array((l - 1) * 2 * 3);
-        const uvs = new Float32Array(l * 2 * 2);
-
-        // #vertices
-        {
-            const vl = vertexPosition.length / 2;
-            for (let i = 0; i < vl; i += 2) {
-                const index = i * 2;
-
-                const x = this._points[i];
-                const y = this._points[i + 1];
-
-                vertexPosition[index + 0] = x;
-                vertexPosition[index + 1] = y - 25;
-                vertexPosition[index + 2] = x;
-                vertexPosition[index + 3] = y + 25;
-            }
+        /* uvs */
+        for (let i = 0; i < uvs.length / 2; i += 2) {
+            const uv = i / (l - 2);
+            uvs[i * 2 + 0] = uv;
+            uvs[i * 2 + 1] = 0;
+            uvs[i * 2 + 2] = uv;
+            uvs[i * 2 + 3] = 1;
         }
 
-        // const nl = vertexNeighbors.length / 2;
-        // for (let i = 0; i < nl; i += 2) {
-        //     //
-        // }
-        // console.warn(l, vl, nl);
+        /* indices */
+        for (let i = 0; i < faces.length; i += 3) {
+            const index = i / 3;
 
-        // #uvs
-        {
-            const ul = uvs.length / 2;
-            for (let i = 0; i < ul; i += 2) {
-                const index = i * 2;
-                const uv = i / (ul - 2);
-
-                uvs[index + 0] = uv;
-                uvs[index + 1] = 0;
-                uvs[index + 2] = uv;
-                uvs[index + 3] = 1;
-            }
+            faces[i + 0] = index + 0;
+            faces[i + 1] = index + 1;
+            faces[i + 2] = index + 2;
         }
 
-        // #indices
-        {
-            const il = indices.length;
-            for (let i = 0; i < il; i += 3) {
-                const index = i / 3;
+        /* vertex position */
+        for (let i = 0; i < vp.length / 2; i += 2) {
+            const x = pp[i];
+            const y = pp[i + 1];
 
-                indices[i + 0] = index + 0;
-                indices[i + 1] = index + 1;
-                indices[i + 2] = index + 2;
-            }
+            vp[i * 2 + 0] = x;
+            vp[i * 2 + 1] = y;
+            vp[i * 2 + 2] = x;
+            vp[i * 2 + 3] = y;
+        }
+
+        /* vertex index */
+        for (let i = 0; i < vi.length; i += 2) {
+            vi[i + 0] = i + 0;
+            vi[i + 1] = i + 1;
+        }
+
+        /* vertex neighbors */
+        const vnl = vn.length;
+
+        vn[0] = vn[4] = pp[0];
+        vn[1] = vn[5] = pp[1];
+        vn[2] = vn[6] = pp[2];
+        vn[3] = vn[7] = pp[3];
+
+        vn[vnl - 4] = vn[vnl - 8] = pp[l - 4];
+        vn[vnl - 3] = vn[vnl - 7] = pp[l - 3];
+        vn[vnl - 2] = vn[vnl - 6] = pp[l - 2];
+        vn[vnl - 1] = vn[vnl - 5] = pp[l - 1];
+
+        for (let i = 2; i < vn.length / 4 - 2; i += 2) {
+            vn[i * 4 + 0] = vn[i * 4 + 4] = pp[i - 2];
+            vn[i * 4 + 1] = vn[i * 4 + 5] = pp[i - 1];
+            vn[i * 4 + 2] = vn[i * 4 + 6] = pp[i + 2];
+            vn[i * 4 + 3] = vn[i * 4 + 7] = pp[i + 3];
         }
 
         // #update
-        vertexNeighborsBuffer.update(vertexNeighbors);
-        vertexPositionBuffer.update(vertexPosition);
-        indexBuffer.update(indices);
+        vertexNeighborsBuffer.update(vn);
+        vertexPositionBuffer.update(vp);
+        vertexIndexBuffer.update(vi);
+        indexBuffer.update(faces);
         uvsBuffer.update(uvs);
     }
 }

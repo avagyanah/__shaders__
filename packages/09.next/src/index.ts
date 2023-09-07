@@ -19,12 +19,21 @@ class App extends PixiApp {
         const fragSrc = assets.shaders.next1.frag;
         const geom = new RopeGeometry(50, [
             //
+            // new Point(100, 100),
+            // new Point(300, 300),
+            // new Point(400, 100),
+            // new Point(-100, 0),
+            // trail.addPoint(300, 100);
+            // trail.addPoint(0, 200);
+            // trail.addPoint(-100, 100);
+
             new Point(0, 0),
             new Point(50, 0),
             new Point(100, 0),
             new Point(150, -100),
             new Point(250, -110),
             new Point(300, -90),
+
             // new Point(150, 0),
             // new Point(200, 0),
             // new Point(250, 0),
@@ -32,8 +41,8 @@ class App extends PixiApp {
             // new Point(350, 0),
             // new Point(400, 0),
         ]);
-        const mesh = new Mesh(geom, Shader.from(vertSrc, fragSrc, { uSampler: Texture.from(assets.images.bg) }));
-        // const mesh = new Mesh(geom, Shader.from(vertSrc, fragSrc, { uSampler: Texture.WHITE }));
+        // const mesh = new Mesh(geom, Shader.from(vertSrc, fragSrc, { uSampler: Texture.from(assets.images.bg) }));
+        const mesh = new Mesh(geom, Shader.from(vertSrc, fragSrc, { uSampler: Texture.WHITE }));
         mesh.position.set(200, 600);
         drawVertices(mesh, mesh, true, false);
         container.addChild(mesh);
@@ -73,6 +82,7 @@ class App extends PixiApp {
 
         //
         const trail = new Trail(Texture.from(assets.images.bg), 50);
+        // const trail = new Trail(Texture.WHITE, 50);
         drawVertices(trail, trail, true, false);
 
         trail.position.set(200, 300);
@@ -84,9 +94,11 @@ class App extends PixiApp {
         trail.setOrigin(0, 0);
         trail.addPoint(50, 0);
         trail.addPoint(100, 0);
-        trail.addPoint(150, -100);
-        trail.addPoint(250, -110);
-        trail.addPoint(300, -90);
+        trail.addPoint(150, 0);
+        trail.addPoint(200, 0);
+        // trail.addPoint(150, -100);
+        // trail.addPoint(250, -110);
+        // trail.addPoint(300, -90);
 
         // trail.addPoint(300, 100);
         // trail.addPoint(0, 200);
@@ -145,6 +157,8 @@ class App extends PixiApp {
             // console.warn(trail.geometry.getBuffer('aTextureCoord').data);
             // console.warn(trail.geometry.getIndex().data);
             // console.warn(mesh.geometry.getIndex().data);
+
+            console.warn(trail.geometry.getBuffer('aVertexNeighbors').data);
         }
 
         // let moved = false;

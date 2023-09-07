@@ -105,7 +105,7 @@ export function drawVertices(
                     gr.moveTo(vx, vy);
                 }
                 gr.beginFill(0xff0101, 1);
-                gr.drawCircle(vx, vy, 1);
+                gr.drawCircle(vx, vy, 5);
             }
             gr.endFill();
         }

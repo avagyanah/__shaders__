@@ -1,25 +1,33 @@
-precision highp float;
+precision mediump float;
 
 attribute vec2 aVertexPosition;
 attribute vec2 aTextureCoord;
 attribute vec4 aVertexNeighbors;
+attribute float aVertexIndex;
 
 uniform mat3 translationMatrix;
 uniform mat3 projectionMatrix;
+
+uniform float uWidth;
+uniform float uNodes;
 
 varying vec2 vTextureCoord;
 varying float vAlpha;
 
 void main()
 {
+    // Stretching from center
+    vec3 vertexPos=vec3(aVertexPosition,1.);
+    vertexPos.y+=mod(aVertexIndex,2.)*uWidth-uWidth*.5;
     
-    vec2 nbL=aVertexNeighbors.xy;
-    vec2 nbR=aVertexNeighbors.zw;
+    vec2 prev=aVertexNeighbors.xy;
+    vec2 next=aVertexNeighbors.zw;
     
-    // GL Position
-    vec4 pos=vec4((projectionMatrix*translationMatrix*vec3(aVertexPosition,1.)).xy,0.,1.);
-    gl_Position=pos;
-    
+    // Varyings
     vTextureCoord=aTextureCoord;
-    vAlpha=pow(aTextureCoord.x,.0);
+    vAlpha=pow(aTextureCoord.x,0.);
+    
+    // RESULT
+    vec4 pos=vec4((projectionMatrix*translationMatrix*vertexPos).xy,0.,1.);
+    gl_Position=pos;
 }
