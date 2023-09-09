@@ -1,5 +1,6 @@
 import type { Texture } from 'pixi.js';
 import { Mesh, MeshGeometry, Program, Shader, TYPES } from 'pixi.js';
+import { Vector3 } from 'three';
 import { assets } from './assets';
 
 interface ITrailUniforms extends Record<string, any> {
@@ -7,6 +8,9 @@ interface ITrailUniforms extends Record<string, any> {
     uWidth: number;
     uNodes: number;
 }
+
+type IVec2 = [number, number];
+type IVec3 = [number, number, number];
 
 export class Trail extends Mesh<Shader> {
     protected $uniforms: ITrailUniforms;
@@ -120,16 +124,96 @@ class TrailGeometry extends MeshGeometry {
             const y = pp[i + 1];
 
             vp[i * 2 + 0] = x;
-            vp[i * 2 + 1] = y;
+            vp[i * 2 + 1] = y - 25;
             vp[i * 2 + 2] = x;
-            vp[i * 2 + 3] = y;
+            vp[i * 2 + 3] = y + 25;
+
+            const currX = pp[i];
+            const currY = pp[i + 1];
+
+            const prevX = pp[i - 2] ?? currX;
+            const prevY = pp[i - 1] ?? currY;
+
+            const nextX = pp[i + 2] ?? currX;
+            const nextY = pp[i + 3] ?? currY;
+
+            const curr = { x: currX, y: currY };
+            const prev = { x: prevX, y: prevY };
+            const next = { x: nextX, y: nextY };
+
+            // const v1: IVec3 = [currX - prevX, currY - prevY, 0];
+            // const v2: IVec3 = [nextX - currX, nextY - currY, 0];
+
+            const v1 = new Vector3(prevX, prevY, 0);
+            const v2 = new Vector3(currX, currY, 0);
+            const v3 = new Vector3(nextX, nextY, 0);
+            // const v1 = new Vector3(currX - prevX, currY - prevY, 0);
+            // const v2 = new Vector3(nextX - currX, nextY - currY, 0);
+            // const angle = v1.normalize().reflect(v2.normalize()).reflect(v3.normalize());
+            // const angle = v2.reflect(v1).reflect(v3).normalize();
+            const angle1 = v2.normalize().dot(v1.normalize());
+            const angle2 = v2.normalize().dot(v3.normalize());
+
+            const dx = (angle1 + angle2) * 25;
+            const dy = (angle1 + angle2) * 25;
+
+            // const angle = Math.atan2(currY - prevY, currX - prevX);
+
+            // const dx = angle.x * 25;
+            // console.warn(angle, dx);
+
+            // const dy = Math.sin(angle.y) * 25;
+            // const dx = angle.x;
+            // console.warn(dx);
+
+            // const dy = angle.y * 25;
+
+            // vp[i * 2 + 0] = x + dx;
+            // vp[i * 2 + 1] = y - dy;
+            // vp[i * 2 + 2] = x + dx;
+            // vp[i * 2 + 3] = y + dy;
+
+            // console.log(dx);
+
+            // vp[i * 2 + 1] = y + dx * 25;
+            // vp[i * 2 + 3] = y + dy * 25;
         }
+        // console.warn('---------------------');
 
         /* vertex index */
         for (let i = 0; i < vi.length; i += 2) {
             vi[i + 0] = i + 0;
             vi[i + 1] = i + 1;
         }
+
+        /* vertex rotate */
+        for (let i = 0; i < vp.length / 2; i += 2) {
+            // const currX = vp[i * 2 + 0];
+            // const currY = vp[i * 2 + 1];
+            // const prevX = vp[i * 2 - 4] ?? currX;
+            // const prevY = vp[i * 2 - 3] ?? currY;
+            // const nextX = vp[i * 2 + 4] ?? currX;
+            // const nextY = vp[i * 2 + 5] ?? currY;
+            // const curr = { x: currX, y: currY };
+            // const prev = { x: prevX, y: prevY };
+            // const next = { x: nextX, y: nextY };
+            // const angle = Math.atan2(currY - prevY, currX - prevX);
+            // const sign = (i * 2) % 2 === 0 ? -1 : 1;
+            // console.log(curr, prev, next);
+            // const dx = Math.cos(angle) * 25 * sign;
+            // const dy = Math.sin(angle) * 25 * sign;
+            // console.log(angle, Math.cos(angle));
+            // vp[i * 2 + 0] += dx;
+            // vp[i * 2 + 1] += dy;
+            // const x = pp[i];
+            // const y = pp[i + 1];
+            // vp[i * 2 + 0] = x;
+            // vp[i * 2 + 1] = y - 25;
+            // vp[i * 2 + 2] = x;
+            // vp[i * 2 + 3] = y + 25;
+        }
+
+        // console.warn('');
 
         /* vertex neighbors */
         const vnl = vn.length;
