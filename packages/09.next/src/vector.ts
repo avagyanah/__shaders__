@@ -7,6 +7,34 @@ export class V3 {
         return [0, 0, 0];
     }
 
+    public static get one(): IVec3 {
+        return [1, 1, 1];
+    }
+
+    public static get up(): IVec3 {
+        return [0, 1, 0];
+    }
+
+    public static get down(): IVec3 {
+        return [0, -1, 0];
+    }
+
+    public static get right(): IVec3 {
+        return [1, 0, 0];
+    }
+
+    public static get left(): IVec3 {
+        return [-1, 0, 0];
+    }
+
+    public static get back(): IVec3 {
+        return [0, 0, -1];
+    }
+
+    public static get forward(): IVec3 {
+        return [0, 0, 1];
+    }
+
     public static magSquared = (v: IVec3): number => {
         return v[0] * v[0] + v[1] * v[1] + v[2] * v[2];
         // return V3.dot(v, v);
@@ -33,8 +61,16 @@ export class V3 {
         return [v1[0] + v2[0], v1[1] + v2[1], v1[2] + v2[2]];
     };
 
+    public static addScalar = (v1: IVec3, s: number): IVec3 => {
+        return [v1[0] + s, v1[1] + s, v1[2] + s];
+    };
+
     public static sub = (v1: IVec3, v2: IVec3): IVec3 => {
         return [v1[0] - v2[0], v1[1] - v2[1], v1[2] - v2[2]];
+    };
+
+    public static subScalar = (v1: IVec3, s: number): IVec3 => {
+        return [v1[0] - s, v1[1] - s, v1[2] - s];
     };
 
     public static multiply = (v: IVec3, scalar: number): IVec3 => {
