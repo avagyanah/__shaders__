@@ -84,4 +84,8 @@ export class V3 {
     public static dot = (v1: IVec3, v2: IVec3): number => {
         return v1[0] * v2[0] + v1[1] * v2[1] + v1[2] * v2[2];
     };
+
+    public static fromAngle(radians: number, length: number): IVec3 {
+        return [Math.cos(radians) * length, Math.sin(radians) * length, 0];
+    }
 }

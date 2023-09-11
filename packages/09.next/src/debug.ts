@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/member-ordering */
 import type { Container } from 'pixi.js';
 import { Graphics } from 'pixi.js';
-import { V3 } from './vector';
 
 export class Debug {
     private static _parent: Container;
@@ -35,7 +34,7 @@ export class Debug {
         Debug._grs.forEach((gr) => gr.clear());
     };
 
-    public static drawLine = (v1: IVec3, v2: IVec3, width = 2, color = Debug.WHITE): void => {
+    public static drawLine = (v1: IVec2, v2: IVec2, width = 2, color = Debug.WHITE): void => {
         Debug._gr.lineStyle(width, color);
         Debug._gr.moveTo(v1[0], v1[1]);
         Debug._gr.lineTo(v2[0], v2[1]);
@@ -43,7 +42,7 @@ export class Debug {
         Debug._reset();
     };
 
-    public static drawVector = (v1: IVec3, v2: IVec3, width = 2, color = Debug.WHITE): void => {
+    public static drawVector = (v1: IVec2, v2: IVec2, width = 2, color = Debug.WHITE): void => {
         Debug.drawLine(v1, v2, width, color);
         Debug._gr.beginFill(color, 1);
         Debug._gr.drawCircle(v2[0], v2[1], width * 2);
@@ -52,7 +51,7 @@ export class Debug {
         Debug._reset();
     };
 
-    public static drawPoint = (v: IVec3, radius = 4, color = Debug.WHITE): void => {
+    public static drawPoint = (v: IVec2, radius = 4, color = Debug.WHITE): void => {
         Debug._gr.beginFill(color, 1);
         Debug._gr.drawCircle(v[0], v[1], radius);
         Debug._gr.endFill();
@@ -60,7 +59,7 @@ export class Debug {
         Debug._reset();
     };
 
-    public static drawCircle = (v: IVec3, width = 2, radius = 100, color = Debug.WHITE): void => {
+    public static drawCircle = (v: IVec2, width = 2, radius = 100, color = Debug.WHITE): void => {
         Debug._gr.lineStyle(width, color);
         Debug._gr.drawCircle(v[0], v[1], radius);
 
@@ -72,12 +71,13 @@ export class Debug {
         Debug._gr.beginFill(0xffffff, 1);
         Debug._gr.endFill();
     };
-    private static _rotate = (v: IVec3, radians: number): void => {
-        const { 0: x, 1: y, 2: z } = v;
-        const normal = V3.normalize(v);
-        console.warn(normal);
 
-        // const
-        return v;
-    };
+    // private static _rotate = (v: IVec2, radians: number): void => {
+    //     const { 0: x, 1: y, 2: z } = v;
+    //     const normal = V3.normalize(v);
+    //     console.warn(normal);
+
+    //     // const
+    //     return v;
+    // };
 }
