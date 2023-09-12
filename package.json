@@ -17,10 +17,11 @@
         "start:blur": "npm run start -w blur",
         "start:offset": "npm run start -w offset",
         "start:erase": "npm run start -w erase",
-        "start:trail": "npm run start -w trail",
+        "start:rope": "npm run start -w rope",
         "start:glow": "npm run start -w glow",
-        "start:next": "npm run start -w next",
-        "start:transform": "npm run start -w transform"
+        "start:debug": "npm run start -w debug",
+        "start:transform": "npm run start -w transform",
+        "start:trail": "npm run start -w trail"
     },
     "devDependencies": {
         "@types/three": "^0.152.1",

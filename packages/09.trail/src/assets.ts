@@ -13,13 +13,13 @@ export const assets = {
             frag: require('../assets/shaders/default/frag.glsl'),
         },
 
-        next1: {
-            vert: require('../assets/shaders/next1/vert.glsl'),
-            frag: require('../assets/shaders/next1/frag.glsl'),
+        rope: {
+            vert: require('../assets/shaders/rope/vert.glsl'),
+            frag: require('../assets/shaders/rope/frag.glsl'),
         },
-        next2: {
-            vert: require('../assets/shaders/next2/vert.glsl'),
-            frag: require('../assets/shaders/next2/frag.glsl'),
+        trail: {
+            vert: require('../assets/shaders/trail/vert.glsl'),
+            frag: require('../assets/shaders/trail/frag.glsl'),
         },
     },
 };
