@@ -61,7 +61,7 @@ class App extends PixiApp {
         drawVertices(rope, rope, true, false);
 
         trail.position.set(-150, -100);
-        rope.position.set(-150, 200);
+        rope.position.set(-150, 100);
 
         container.addChild(trail);
         container.addChild(rope);

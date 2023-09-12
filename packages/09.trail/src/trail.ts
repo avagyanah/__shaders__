@@ -1,8 +1,6 @@
 import type { Texture } from 'pixi.js';
 import { Mesh, MeshGeometry, Program, Shader, TYPES } from 'pixi.js';
-import { radToDeg } from 'three/src/math/MathUtils';
 import { assets } from './assets';
-import { V2 } from './vector2';
 
 interface ITrailUniforms extends Record<string, any> {
     uSampler: Texture;
@@ -127,61 +125,39 @@ class TrailGeometry extends MeshGeometry {
             const x = pp[i + 0];
             const y = pp[i + 1];
 
-            const currX = pp[i + 0];
-            const currY = pp[i + 1];
-
-            const prevX = pp[i - 2];
-            const prevY = pp[i - 1];
-
-            const nextX = pp[i + 2];
-            const nextY = pp[i + 3];
-
-            const curr: IVec2 = [currX, currY];
-            const prev: IVec2 = prevY != null ? [prevX, prevY] : [currX, currY];
-            const next: IVec2 = nextY != null ? [nextX, nextY] : [currX, currY];
-
-            // a = (p1.x - p2.x, p1.y - p2.y)
-            // b = (p1.x - p3.x, p1.y - p3.y)
-
-            // const v1 = V2.sub(prev, curr);
-            // const v2 = V2.sub(next, curr);
-
-            // const dot = V2.dot(V2.normalize(v1), V2.normalize(v2));
-            // console.log(dot);
-
-            // const angle = Math.atan2(v1[1], v1[0]) - Math.atan2(v2[1], v2[0]);
-            const angle = Math.atan2(next[1] - prev[1], next[0] - prev[0]);
-
-            const v1 = V2.rotateAround2(curr, [currX, currY - 25], -angle);
-            const v2 = V2.rotateAround2(curr, [currX, currY + 25], -angle);
-
             // vertex 1
-            vp[i * 2 + 0] = v1[0];
-            vp[i * 2 + 1] = v1[1];
+            vp[i * 2 + 0] = x;
+            vp[i * 2 + 1] = y;
             // vertex 2
-            vp[i * 2 + 2] = v2[0];
-            vp[i * 2 + 3] = v2[1];
+            vp[i * 2 + 2] = x;
+            vp[i * 2 + 3] = y;
 
-            console.log(radToDeg(angle));
+            // const currX = pp[i + 0];
+            // const currY = pp[i + 1];
 
-            // double result = atan2(P3.y - P1.y, P3.x - P1.x) -
-            //     atan2(P2.y - P1.y, P2.x - P1.x);
+            // const prevX = pp[i - 2];
+            // const prevY = pp[i - 1];
 
-            // const angle = Math.acos((V2.dot(v1, v2) / V2.mag(v1)) * V2.mag(v2));
+            // const nextX = pp[i + 2];
+            // const nextY = pp[i + 3];
 
-            // const dot = V2.dot(V2.normalize(v1), V2.normalize(v2));
-            // console.log(dot);
+            // const curr: IVec2 = [currX, currY];
+            // const prev: IVec2 = prevY != null ? [prevX, prevY] : [currX, currY];
+            // const next: IVec2 = nextY != null ? [nextX, nextY] : [currX, currY];
 
-            // const angle = Math.acos((dot / V2.mag(v1)) * V2.mag(v2));
-            // console.log(angle);
-            // console.log(curr, prev, next, angle);
+            // const angle = Math.atan2(next[1] - prev[1], next[0] - prev[0]);
+
+            // const v1 = V2.rotateAround(curr, [currX, currY - 25], -angle);
+            // const v2 = V2.rotateAround(curr, [currX, currY + 25], -angle);
 
             // // vertex 1
-            // vp[i * 2 + 0] = x;
-            // vp[i * 2 + 1] = y - 25;
+            // vp[i * 2 + 0] = v1[0];
+            // vp[i * 2 + 1] = v1[1];
             // // vertex 2
-            // vp[i * 2 + 2] = x;
-            // vp[i * 2 + 3] = y + 25;
+            // vp[i * 2 + 2] = v2[0];
+            // vp[i * 2 + 3] = v2[1];
+
+            // console.log(radToDeg(angle));
         }
         console.warn('___________________________');
 

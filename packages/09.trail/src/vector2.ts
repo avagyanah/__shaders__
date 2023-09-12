@@ -92,42 +92,14 @@ export class V2 {
     //     return [nx, ny];
     // }
 
-    public static rotateAround2 = (v1: IVec2, v2: IVec2, angle: number): IVec2 => {
+    public static rotateAround = (v1: IVec2, v2: IVec2, angle: number): IVec2 => {
         const cos = Math.cos(angle);
         const sin = Math.sin(angle);
 
         const x = cos * (v2[0] - v1[0]) + sin * (v2[1] - v1[1]) + v1[0];
         const y = cos * (v2[1] - v1[1]) - sin * (v2[0] - v1[0]) + v1[1];
-        // const nx = cos * (v2[0] - v1[0]) + sin * (v2[1] - v1[1]) + v1[0];
-        // const ny = cos * (v2[1] - v1[1]) - sin * (v2[0] - v1[0]) + v1[1];
 
         return [x, y];
-    };
-
-    public static rotateAround = (v1: IVec2, v2: IVec2, angle: number): IVec2 => {
-        // // const dot = V2.dot(V2.normalize(v1), V2.normalize(v2));
-        // const radius = V2.distance(v1, v2);
-        // const v = V2.sub(v2, v1);
-        // console.log(v);
-
-        // const x = Math.cos(angle) * radius;
-        // const y = Math.sin(angle) * radius;
-        // console.log({ v1, angle: radToDeg(angle), x, y, radius });
-
-        // return [v1[0] + x, v1[1] + y];
-        return v1;
-        // const mag = 1;
-
-        // const x = Math.cos(angle) * (v1[0] - v2[0]);
-        // console.log(x);
-
-        // // const y = Math.sin(angle) * (v2[1] - v1[1]);
-
-        // return [v1[0] + x * mag, v1[1]];
-        // // const x =
-        // // const y = Math.sin(v2[1] - v1[1]);
-
-        // // return [v1[0] + x * mag, v1[1] + y * mag];
     };
 
     public static fromAngle(radians: number, length: number): IVec2 {

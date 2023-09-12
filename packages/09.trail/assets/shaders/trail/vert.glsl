@@ -18,26 +18,33 @@ mat2 rotate(float angle){
     return mat2(cos(angle),-sin(angle),sin(angle),cos(angle));
 }
 
+vec2 rotateAround(vec2 v1,vec2 v2,float angle){
+    float cos=cos(angle);
+    float sin=sin(angle);
+    
+    float x=cos*(v2[0]-v1[0])+sin*(v2[1]-v1[1])+v1[0];
+    float y=cos*(v2[1]-v1[1])-sin*(v2[0]-v1[0])+v1[1];
+    
+    return vec2(x,y);
+}
+
 void main()
 {
     // Stretching from center
     vec3 vertexPos=vec3(aVertexPosition,1.);
     
-    // // float distY=mod(aVertexIndex,2.)*uWidth-uWidth*.5;
-    // float distY=mod(aVertexIndex,2.)*uWidth;
-    // // vertexPos.y+=distY;
+    float distY=mod(aVertexIndex,2.)*uWidth-uWidth*.5;
     
-    // vec2 curr=aVertexPosition;
-    // vec2 prev=aVertexNeighbors.xy;
-    // vec2 next=aVertexNeighbors.zw;
+    vec2 curr=aVertexPosition;
+    vec2 prev=aVertexNeighbors.xy;
+    vec2 next=aVertexNeighbors.zw;
     
-    // // vec2 v1=prev-curr;
-    // // vec2 v2=next-curr;
-    // vec2 v=(atan(prev,curr)+atan(next,curr))/.5;
+    float angle=atan(next.y-prev.y,next.x-prev.x);
     
-    // // vec2 v1=next-curr;
-    // // float dotx=dot(next,curr);
-    // // atan(prev - curr) - atan();
+    vec2 v1=rotateAround(curr,vec2(curr[0],curr[1]-distY),-angle);
+    
+    vertexPos.x=v1.x;
+    vertexPos.y=v1.y;
     
     // RESULT
     vec4 pos=vec4((projectionMatrix*translationMatrix*vertexPos).xy,0.,1.);
