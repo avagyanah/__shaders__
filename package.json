@@ -44,6 +44,7 @@
     "dependencies": {
         "pixi.js": "7.2.4",
         "pixi-stats": "^1.2.2",
-        "three": "^0.152.2"
+        "three": "^0.152.2",
+        "@gameastic/stats": "1.0.4"
     }
 }

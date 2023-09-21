@@ -1,5 +1,5 @@
-import { Container, Texture } from 'pixi.js';
-import { PixiApp, drawVertices } from '../../../shared/pixi';
+import { Container, Sprite, Texture, Ticker } from 'pixi.js';
+import { PixiApp } from '../../../shared/pixi';
 import { assets } from './assets';
 import { Trail } from './trail';
 
@@ -10,77 +10,104 @@ window.addEventListener('load', () => {
 
 class App extends PixiApp {
     public init(): void {
+        // const mat = new Shader(new Program(assets.shaders.default.vert, assets.shaders.default.frag), {
+        //     uSampler: Texture.from(assets.images.bg),
+        // });
+        // const geom = new PlaneGeometry(300, 300, 2, 2);
+
+        // const mesh1 = new Mesh(geom, mat);
+        // const mesh2 = new Mesh(geom, mat);
+        // const mesh3 = new Mesh(geom, mat);
+        // const mesh4 = new Mesh(geom, mat);
+
+        // this.stage.addChild(mesh1);
+        // this.stage.addChild(mesh2);
+        // this.stage.addChild(mesh3);
+        // this.stage.addChild(mesh4);
+
+        // mesh1.position.set(100, 100);
+        // mesh2.position.set(200, 200);
+        // mesh3.position.set(300, 300);
+        // mesh4.position.set(400, 400);
+
         const container = new Container();
+        container.position.set(200, 0);
+        // container.position.set(400, 300);
         this.stage.addChild(container);
 
-        //
-        //
-        //
+        const ticker: Ticker = Ticker.shared;
 
-        const trail = new Trail(Texture.from(assets.images.bg), 50);
-        // const trail = new Trail(Texture.WHITE, 50);
+        const ballTexture = Texture.from(assets.images.ball);
+        const trailTexture = Texture.from(assets.images.bg);
 
-        trail.setOrigin(0, 0);
-        trail.addPoint(50, 0);
-        trail.addPoint(150, -100);
-        trail.addPoint(250, -110);
-        trail.addPoint(300, -90);
+        let time = 0;
 
-        drawVertices(trail, trail, true, false);
+        ticker.add(() => {
+            time += 0.01;
+            this.stage.x -= 8;
+        });
 
-        trail.position.set(-150, -100);
-        container.addChild(trail);
+        const balls = [];
+        const trails = [];
 
-        container.position.set(window.innerWidth * 0.5, window.innerHeight * 0.5);
+        for (let i = 0; i < 1; i++) {
+            for (let j = 0; j < 0; j++) {
+                // for (let i = 0; i < 16; i++) {
+                //     for (let j = 0; j < 9; j++) {
+                // for (let i = 0; i < 10; i++) {
+                //     for (let j = 0; j < 10; j++) {
+                const ball = Sprite.from(ballTexture);
+                ball.anchor.set(0.5);
+                ball.width = 30;
+                ball.height = 30;
 
-        //
-        //
-        //
+                const trail = new Trail({ texture: trailTexture, width: 20, lifeTime: 1000 });
+                trail.setTarget(ball);
 
-        // const vertSrc = assets.shaders.rope.vert;
-        // const fragSrc = assets.shaders.rope.frag;
-        // const geom = new RopeGeometry(50, [
-        //     //
-        //     // new Point(-100, 50),
-        //     new Point(0, 0),
-        //     new Point(50, 0),
-        //     new Point(150, -100),
-        //     new Point(250, -110),
-        //     new Point(300, -90),
-        //     // new Point(300, 100),
-        //     // new Point(100, 120),
-        //     // new Point(100, 60),
-        // ]);
-        // // const mesh = new Mesh(geom, Shader.from(vertSrc, fragSrc, { uSampler: Texture.from(assets.images.bg) }));
-        // const rope = new Mesh(geom, Shader.from(vertSrc, fragSrc, { uSampler: Texture.WHITE }));
+                balls.push(ball);
+                trails.push(trail);
 
-        // //
-        // //
-        // //
+                ball.x = j * 140;
+            }
+        }
 
-        // drawVertices(trail, trail, true, false);
-        // drawVertices(rope, rope, true, false);
+        trails.forEach((trail) => container.addChild(trail));
+        balls.forEach((ball) => container.addChild(ball));
 
-        // trail.position.set(-150, -100);
-        // rope.position.set(-150, 100);
+        const ballsUpdate = (): void => {
+            balls.forEach((ball, i) => {
+                const x = ball.x + 8;
+                const y = (i / 9) * 100 + 110 + Math.sin(time * 10) * 100;
 
-        // container.addChild(trail);
-        // container.addChild(rope);
+                ball.position.set(x, y);
+            });
+        };
 
-        // container.position.set(window.innerWidth * 0.5, window.innerHeight * 0.5);
+        const trailsUpdate = (): void => {
+            trails.forEach((trail, i) => {
+                trail.update(Ticker.shared.deltaMS);
+            });
+        };
 
-        // //
-        // //
-        // //
+        const trailsAddPoint = (): void => {
+            trails.forEach((trail, i) => {
+                trail.addPoint(balls[i].x, balls[i].y);
+            });
+        };
 
-        // {
-        //     // console.warn(mesh.geometry.getBuffer('aVertexPosition').data);
-        //     // console.warn(trail.geometry.getBuffer('aVertexPosition').data);
-        //     // console.warn(mesh.geometry.getBuffer('aTextureCoord').data);
-        //     // console.warn(trail.geometry.getBuffer('aTextureCoord').data);
-        //     // console.warn(trail.geometry.getIndex().data);
-        //     // console.warn(mesh.geometry.getIndex().data);
-        //     // console.warn(trail.geometry.getBuffer('aVertexNeighbors').data);
-        // }
+        Ticker.shared.add(ballsUpdate);
+        Ticker.shared.add(trailsUpdate);
+        Ticker.shared.add(trailsAddPoint);
+
+        // setTimeout(() => {
+        //     Ticker.shared.remove(ballsUpdate);
+        //     // Ticker.shared.remove(trailsAddPoint);
+        //     // Ticker.shared.remove(trailsUpdate);
+        // }, 1000);
+
+        // setTimeout(() => {
+        //     Ticker.shared.add(ballsUpdate);
+        //     // Ticker.shared.add(trailsAddPoint);
+        // }, 1400);
     }
 }

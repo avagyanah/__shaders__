@@ -1,85 +1,108 @@
-import type { Texture } from 'pixi.js';
+import type { Container, Texture } from 'pixi.js';
 import { Mesh, MeshGeometry, Program, Shader, TYPES } from 'pixi.js';
 import { assets } from './assets';
+
+interface ITrailConfig {
+    texture: Texture;
+    width: number;
+    lifeTime: number;
+}
 
 interface ITrailUniforms extends Record<string, any> {
     uSampler: Texture;
     uWidth: number;
-    uNodes: number;
 }
 
 export class Trail extends Mesh<Shader> {
     protected $uniforms: ITrailUniforms;
     protected $geom!: TrailGeometry;
     protected $mat!: TrailMaterial;
+    protected $target!: Container;
+    private _elapsed = 0;
 
-    public constructor(texture: Texture, width: number) {
-        const uniforms: ITrailUniforms = { uSampler: texture, uWidth: width, uNodes: 0 };
+    public constructor(private readonly _config: ITrailConfig) {
+        const uniforms: ITrailUniforms = { uSampler: _config.texture, uWidth: _config.width };
 
-        super(new TrailGeometry(width, uniforms), new TrailMaterial(uniforms));
+        super(new TrailGeometry(uniforms), new TrailMaterial(uniforms));
 
         this.$uniforms = uniforms;
         this.$geom = this.geometry as TrailGeometry;
         this.$mat = this.material as TrailMaterial;
     }
 
-    public setOrigin(x: number, y: number): void {
-        this.$geom.setOrigin(x, y);
+    public setTarget(target: Container): void {
+        this.$target = target;
+        this.$geom.points = [];
     }
 
     public addPoint(x: number, y: number): void {
         this.$geom.addPoint(x, y);
     }
 
-    public removePoint(): void {
-        this.$geom.removePoint();
-    }
+    // public removePoint(): void {
+    //     this.$geom.removePoint();
+    // }
 
     public update(dt: number): void {
-        //
+        const rmc = Math.floor(this._elapsed / this._config.lifeTime);
+
+        if (rmc > 0) {
+            // console.log('mta');
+
+            // console.log(this.$geom.points.length);
+
+            // this._elapsed -= dt;
+            this.$geom.points = this.$geom.points.slice(rmc * 2);
+        } else {
+            this._elapsed += dt;
+            //
+        }
+
+        console.log(this._elapsed);
+
+        this.$geom.update();
     }
 }
 
 class TrailGeometry extends MeshGeometry {
-    private _points: number[] = [0, 0];
+    private _points: number[] = [];
 
-    public constructor(private readonly _width: number, private readonly _uniforms: ITrailUniforms) {
+    public constructor(private readonly _uniforms: ITrailUniforms) {
         super(new Float32Array(0), new Float32Array(0), new Uint16Array(0));
 
         this.addAttribute('aVertexIndex', new Uint32Array(0), 1, false, TYPES.FLOAT);
         this.addAttribute('aVertexNeighbors', new Float32Array(0), 4, false, TYPES.FLOAT);
     }
 
-    public setOrigin(x: number, y: number): void {
-        this._points = [x, y];
-        this._uniforms.uNodes = 1;
+    public get points(): number[] {
+        return this._points;
     }
 
-    public removePoint(): void {
-        if (this._points.length < 2) {
-            return;
-        }
-
-        this._points.splice(0, 2);
-
-        this._update();
+    public set points(value: number[]) {
+        this._points = value;
     }
+
+    // public removePoint(): void {
+    //     if (this._points.length < 2) {
+    //         return;
+    //     }
+
+    //     this._points = this._points.slice(2);
+
+    //     // this._points.splice(0, 2);
+    // }
 
     public addPoint(x: number, y: number): void {
         this._points.push(x, y);
-
-        this._update();
     }
 
-    private _update(): void {
+    public update(): void {
         const pp = this._points;
 
         const l = pp.length;
         if (l < 4) {
             return;
         }
-
-        this._uniforms.uNodes = l / 2;
 
         const vertexNeighborsBuffer = this.getBuffer('aVertexNeighbors');
         const vn = new Float32Array(l * 2 * 2);
@@ -131,35 +154,7 @@ class TrailGeometry extends MeshGeometry {
             // vertex 2
             vp[i * 2 + 2] = x;
             vp[i * 2 + 3] = y;
-
-            // const currX = pp[i + 0];
-            // const currY = pp[i + 1];
-
-            // const prevX = pp[i - 2];
-            // const prevY = pp[i - 1];
-
-            // const nextX = pp[i + 2];
-            // const nextY = pp[i + 3];
-
-            // const curr: IVec2 = [currX, currY];
-            // const prev: IVec2 = prevY != null ? [prevX, prevY] : [currX, currY];
-            // const next: IVec2 = nextY != null ? [nextX, nextY] : [currX, currY];
-
-            // const angle = Math.atan2(next[1] - prev[1], next[0] - prev[0]);
-
-            // const v1 = V2.rotateAround(curr, [currX, currY - 25], -angle);
-            // const v2 = V2.rotateAround(curr, [currX, currY + 25], -angle);
-
-            // // vertex 1
-            // vp[i * 2 + 0] = v1[0];
-            // vp[i * 2 + 1] = v1[1];
-            // // vertex 2
-            // vp[i * 2 + 2] = v2[0];
-            // vp[i * 2 + 3] = v2[1];
-
-            // console.log(radToDeg(angle));
         }
-        console.warn('___________________________');
 
         /* vertex neighbors */
         const vnl = vn.length;
@@ -190,20 +185,8 @@ class TrailGeometry extends MeshGeometry {
     }
 }
 
-const vertSrc = assets.shaders.trail.vert;
-const fragSrc = assets.shaders.trail.frag;
-
 class TrailMaterial extends Shader {
     public constructor(private readonly _uniforms: ITrailUniforms) {
-        super(new Program(vertSrc, fragSrc), _uniforms);
+        super(new Program(assets.shaders.trail.vert, assets.shaders.trail.frag), _uniforms);
     }
 }
-
-// class TrailMaterial extends MeshMaterial {
-//     public constructor(private readonly _uniforms: ITrailUniforms) {
-//         super(Texture.WHITE, {
-//             program: new Program(vertSrc, fragSrc),
-//             uniforms: _uniforms,
-//         });
-//     }
-// }

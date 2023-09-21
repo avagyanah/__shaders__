@@ -1,4 +1,4 @@
-precision mediump float;
+precision lowp float;
 
 attribute vec2 aVertexPosition;
 attribute vec2 aTextureCoord;
@@ -14,16 +14,15 @@ uniform float uNodes;
 varying vec2 vTextureCoord;
 varying float vAlpha;
 
-mat2 rotate(float angle){
-    return mat2(cos(angle),-sin(angle),sin(angle),cos(angle));
-}
-
 vec2 rotateAround(vec2 v1,vec2 v2,float angle){
     float cos=cos(angle);
     float sin=sin(angle);
     
-    float x=cos*(v2[0]-v1[0])+sin*(v2[1]-v1[1])+v1[0];
-    float y=cos*(v2[1]-v1[1])-sin*(v2[0]-v1[0])+v1[1];
+    float dx=v2[0]-v1[0];
+    float dy=v2[1]-v1[1];
+    
+    float x=cos*(dx)+sin*(dy)+v1[0];
+    float y=cos*(dy)-sin*(dx)+v1[1];
     
     return vec2(x,y);
 }
@@ -41,10 +40,10 @@ void main()
     
     float angle=atan(next.y-prev.y,next.x-prev.x);
     
-    vec2 v1=rotateAround(curr,vec2(curr[0],curr[1]-distY),-angle);
+    vec2 vp=rotateAround(curr,vec2(curr[0],curr[1]+distY),-angle);
     
-    vertexPos.x=v1.x;
-    vertexPos.y=v1.y;
+    vertexPos.x=vp.x;
+    vertexPos.y=vp.y;
     
     // RESULT
     vec4 pos=vec4((projectionMatrix*translationMatrix*vertexPos).xy,0.,1.);
