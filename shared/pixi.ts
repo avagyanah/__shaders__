@@ -8,6 +8,7 @@ export abstract class PixiApp extends Application {
             sharedTicker: true,
             backgroundAlpha: 1,
             backgroundColor: 0x343434,
+            hello: true,
             // backgroundColor: 0x1099bb,
             resolution: getResolution(),
             view: <HTMLCanvasElement>getElementById('game_canvas'),

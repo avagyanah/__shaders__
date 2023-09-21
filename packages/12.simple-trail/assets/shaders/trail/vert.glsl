@@ -9,14 +9,9 @@ uniform mat3 translationMatrix;
 uniform mat3 projectionMatrix;
 
 uniform float uWidth;
-uniform float uNodes;
 
 varying vec2 vTextureCoord;
 varying float vAlpha;
-
-mat2 rotate(float angle){
-    return mat2(cos(angle),-sin(angle),sin(angle),cos(angle));
-}
 
 vec2 rotateAround(vec2 v1,vec2 v2,float angle){
     float cos=cos(angle);
@@ -30,9 +25,6 @@ vec2 rotateAround(vec2 v1,vec2 v2,float angle){
 
 void main()
 {
-    // Stretching from center
-    vec3 vertexPos=vec3(aVertexPosition,1.);
-    
     float distY=mod(aVertexIndex,2.)*uWidth-uWidth*.5;
     
     vec2 curr=aVertexPosition;
@@ -40,17 +32,16 @@ void main()
     vec2 next=aVertexNeighbors.zw;
     
     float angle=atan(next.y-prev.y,next.x-prev.x);
+    vec2 v1=rotateAround(curr,vec2(curr[0],curr[1]-distY),-angle);
     
-    vec2 v1=rotateAround(curr,vec2(curr[0],curr[1]+distY),-angle);
+    vec3 vertexPos=vec3(v1,1.);
     
-    vertexPos.x=v1.x;
-    vertexPos.y=v1.y;
-    
+    // vec3 vertexPos=vec3(aVertexPosition,1.);
     // RESULT
     vec4 pos=vec4((projectionMatrix*translationMatrix*vertexPos).xy,0.,1.);
     gl_Position=pos;
     
     // Varyings
     vTextureCoord=aTextureCoord;
-    vAlpha=pow(aTextureCoord.x,0.);
+    vAlpha=pow(aTextureCoord.x,1.);
 }

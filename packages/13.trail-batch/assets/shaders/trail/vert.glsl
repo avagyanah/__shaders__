@@ -41,7 +41,7 @@ void main()
     
     float angle=atan(next.y-prev.y,next.x-prev.x);
     
-    vec2 v1=rotateAround(curr,vec2(curr[0],curr[1]+distY),-angle);
+    vec2 v1=rotateAround(curr,vec2(curr[0],curr[1]-distY),-angle);
     
     vertexPos.x=v1.x;
     vertexPos.y=v1.y;

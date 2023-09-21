@@ -21,7 +21,9 @@
         "start:glow": "npm run start -w glow",
         "start:debug": "npm run start -w debug",
         "start:transform": "npm run start -w transform",
-        "start:trail": "npm run start -w trail"
+        "start:trail": "npm run start -w trail",
+        "start:simple-trail": "npm run start -w simple-trail",
+        "start:trail-batch": "npm run start -w trail-batch"
     },
     "devDependencies": {
         "@types/three": "^0.152.1",
@@ -41,6 +43,7 @@
     },
     "dependencies": {
         "pixi.js": "7.2.4",
+        "pixi-stats": "^1.2.2",
         "three": "^0.152.2"
     }
 }

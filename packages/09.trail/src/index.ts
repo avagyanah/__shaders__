@@ -17,8 +17,8 @@ class App extends PixiApp {
         //
         //
 
-        // const trail = new Trail(Texture.from(assets.images.bg), 50);
-        const trail = new Trail(Texture.WHITE, 50);
+        const trail = new Trail(Texture.from(assets.images.bg), 50);
+        // const trail = new Trail(Texture.WHITE, 50);
 
         // trail.setOrigin(50, 200);
         trail.setOrigin(0, 0);
@@ -50,8 +50,8 @@ class App extends PixiApp {
             // new Point(100, 120),
             // new Point(100, 60),
         ]);
-        // const mesh = new Mesh(geom, Shader.from(vertSrc, fragSrc, { uSampler: Texture.from(assets.images.bg) }));
-        const rope = new Mesh(geom, Shader.from(vertSrc, fragSrc, { uSampler: Texture.WHITE }));
+        const rope = new Mesh(geom, Shader.from(vertSrc, fragSrc, { uSampler: Texture.from(assets.images.bg) }));
+        // const rope = new Mesh(geom, Shader.from(vertSrc, fragSrc, { uSampler: Texture.WHITE }));
 
         //
         //
