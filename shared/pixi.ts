@@ -1,6 +1,6 @@
-import { DrawCallsPanel, FPSPanel, MemoryPanel, Stats } from '@gameastic/stats';
+// import { DrawCallsPanel, FPSPanel, MemoryPanel, Stats } from '@gameastic/stats';
 import type { Container, DisplayObject, Mesh, MeshMaterial, Shader } from 'pixi.js';
-import { Application, Graphics, Ticker, UPDATE_PRIORITY } from 'pixi.js';
+import { Application, Graphics, Ticker } from 'pixi.js';
 import { getElementById, getResolution } from './utils';
 
 export abstract class PixiApp extends Application {
@@ -10,7 +10,7 @@ export abstract class PixiApp extends Application {
             backgroundAlpha: 1,
             backgroundColor: 0x343434,
             hello: true,
-            // backgroundColor: 0x1099bb,
+
             resolution: getResolution(),
             view: <HTMLCanvasElement>getElementById('game_canvas'),
         });
@@ -18,22 +18,22 @@ export abstract class PixiApp extends Application {
         window.addEventListener('resize', this.resize);
         this.resize();
 
-        const stats = new Stats({
-            css: 'bottom:0;left:0;transform-origin:left top;cursor:pointer;opacity:0.9',
-            renderStep: 500,
-        });
-        document.body.appendChild(stats.dom);
+        // const stats = new Stats({
+        //     css: 'bottom:0;left:0;transform-origin:left top;cursor:pointer;opacity:0.9',
+        //     renderStep: 500,
+        // });
+        // document.body.appendChild(stats.dom);
 
-        const gl = WebGL2RenderingContext.prototype ?? WebGLRenderingContext.prototype;
+        // const gl = WebGL2RenderingContext.prototype ?? WebGLRenderingContext.prototype;
 
-        stats.addPanel(new FPSPanel('FPS', '#0ff', '#002'));
-        stats.addPanel(new MemoryPanel('MB', '#f08', '#201'));
-        stats.addPanel(new DrawCallsPanel('DC', '#f60', '#300', gl));
-        stats.dom.style.transform = `scale(${2})`;
+        // stats.addPanel(new FPSPanel('FPS', '#0ff', '#002'));
+        // stats.addPanel(new MemoryPanel('MB', '#f08', '#201'));
+        // stats.addPanel(new DrawCallsPanel('DC', '#f60', '#300', gl));
+        // stats.dom.style.transform = `scale(${2})`;
 
-        stats.showPanel(0);
+        // stats.showPanel(2);
 
-        Ticker.shared.add(stats.update, stats, UPDATE_PRIORITY.UTILITY);
+        // Ticker.shared.add(stats.update, stats, UPDATE_PRIORITY.UTILITY);
     }
 
     public resize = (): void => {

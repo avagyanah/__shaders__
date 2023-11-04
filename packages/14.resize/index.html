@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <style>
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            width: 100%;
+            height: 100%;
+
+        }
+
+        #game_div {
+            position: absolute;
+            box-sizing: border-box;
+            -moz-box-sizing: border-box;
+            -webkit-box-sizing: border-box;
+            border: 0px solid #ff0000;
+            width: 100%;
+            height: 100%;
+        }
+
+        #game_canvas {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+        }
+
+        div#stats {
+            position: fixed;
+            top: 0;
+            right: 0;
+            z-index: 500;
+            width: max(200px, 10vw, 10vh);
+            height: max(100px, 6vh, 6vw);
+            opacity: 0.8;
+            user-select: none;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="game_div"><canvas id="game_canvas"></canvas></div>
+</body>
+
+</html>

@@ -23,28 +23,39 @@
         "start:transform": "npm run start -w transform",
         "start:trail": "npm run start -w trail",
         "start:simple-trail": "npm run start -w simple-trail",
-        "start:trail-batch": "npm run start -w trail-batch"
+        "start:trail-batch": "npm run start -w trail-batch",
+        "start:resize": "npm run start -w resize",
+        "start:matter": "npm run start -w matter",
+        "start:tweedle": "npm run start -w tweedle"
     },
     "devDependencies": {
         "@types/three": "^0.152.1",
         "@typescript-eslint/eslint-plugin": "^5.59.9",
         "@typescript-eslint/parser": "^5.59.9",
-        "eslint-plugin-prettier": "^4.2.1",
-        "eslint-config-prettier": "^8.8.0",
+        "@types/matter-js": "^0.19.2",
+        "esbuild-loader": "^3.0.1",
         "eslint": "^8.42.0",
+        "eslint-config-prettier": "^8.8.0",
+        "eslint-plugin-prettier": "^4.2.1",
+        "html-webpack-plugin": "^5.5.1",
         "prettier": "^2.8.8",
         "typescript": "5.0.4",
-        "html-webpack-plugin": "^5.5.1",
-        "esbuild-loader": "^3.0.1",
         "webpack": "^5.84.1",
+        "webpack-cli": "^5.1.4",
         "webpack-dev-server": "^4.15.0",
-        "webpack-merge": "^5.9.0",
-        "webpack-cli": "^5.1.4"
+        "webpack-merge": "^5.9.0"
     },
     "dependencies": {
-        "pixi.js": "7.2.4",
+        "@gameastic/stats": "1.0.4",
+        "@pixi/layout": "^0.3.4",
+        "cannon-es": "^0.20.0",
+        "cannon-es-debugger": "^1.0.0",
+        "gsap": "^3.11.5",
         "pixi-stats": "^1.2.2",
+        "pixi.js": "^7.2.4",
         "three": "^0.152.2",
-        "@gameastic/stats": "1.0.4"
+        "matter-js": "^0.19.0",
+        "tweedle.js": "^2.1.0",
+        "@tweenjs/tween.js": "^21.0.0"
     }
 }
