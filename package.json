@@ -26,7 +26,9 @@
         "start:trail-batch": "npm run start -w trail-batch",
         "start:resize": "npm run start -w resize",
         "start:matter": "npm run start -w matter",
-        "start:tweedle": "npm run start -w tweedle"
+        "start:tweedle": "npm run start -w tweedle",
+        "start:projectile": "npm run start -w projectile",
+        "start:skew": "npm run start -w skew"
     },
     "devDependencies": {
         "@types/three": "^0.152.1",
@@ -56,6 +58,7 @@
         "three": "^0.152.2",
         "matter-js": "^0.19.0",
         "tweedle.js": "^2.1.0",
-        "@tweenjs/tween.js": "^21.0.0"
+        "@tweenjs/tween.js": "^21.0.0",
+        "pixi-projection": "^1.0.0"
     }
 }

@@ -18,35 +18,35 @@ class App extends PixiApp {
         container.addChild(disp);
         //
 
-        const vert = assets.shaders.glow2.vert;
-        const frag = assets.shaders.glow2.frag;
+        const vert = assets.shaders.glow1.vert;
+        const frag = assets.shaders.glow1.frag;
 
         // UNIFORMS
         const uniforms = {
-            uSampler: Texture.from(assets.images.displacement),
-            u_resolution: { x: window.innerWidth, y: window.innerHeight },
-            u_time: performance.now(),
-            u_mouse: [0, 0],
+            // uSampler: Texture.from(assets.images.displacement),
+            // u_resolution: { x: window.innerWidth, y: window.innerHeight },
+            // u_time: performance.now(),
+            // u_mouse: [0, 0],
             u_intensity: 1,
-            u_gap: 0.4,
-            u_count: 20,
-            u_color: [1, 1, 1, 1],
+            // u_gap: 0.4,
+            // u_count: 2,
+            u_color: [1, 0, 0, 1],
         };
 
-        document.onmousemove = (event) => {
-            uniforms.u_mouse[0] = event.pageX;
-            uniforms.u_mouse[1] = event.pageY;
-        };
+        // document.onmousemove = (event) => {
+        //     uniforms.u_mouse[0] = event.pageX;
+        //     uniforms.u_mouse[1] = event.pageY;
+        // };
 
-        window.addEventListener('resize', () => {
-            uniforms.u_resolution.x = this.renderer.width;
-            uniforms.u_resolution.y = this.renderer.height;
-        });
+        // window.addEventListener('resize', () => {
+        //     uniforms.u_resolution.x = this.renderer.width;
+        //     uniforms.u_resolution.y = this.renderer.height;
+        // });
 
-        setInterval(() => {
-            uniforms.u_time = performance.now();
-            mesh.rotation += 0.001;
-        });
+        // setInterval(() => {
+        //     uniforms.u_time = performance.now();
+        //     mesh.rotation += 0.001;
+        // });
         // -------------
 
         const width = 500;
