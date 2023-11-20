@@ -28,13 +28,14 @@
         "start:matter": "npm run start -w matter",
         "start:tweedle": "npm run start -w tweedle",
         "start:projectile": "npm run start -w projectile",
-        "start:skew": "npm run start -w skew"
+        "start:skew": "npm run start -w skew",
+        "start:box2d": "npm run start -w box2d"
     },
     "devDependencies": {
+        "@types/matter-js": "^0.19.2",
         "@types/three": "^0.152.1",
         "@typescript-eslint/eslint-plugin": "^5.59.9",
         "@typescript-eslint/parser": "^5.59.9",
-        "@types/matter-js": "^0.19.2",
         "esbuild-loader": "^3.0.1",
         "eslint": "^8.42.0",
         "eslint-config-prettier": "^8.8.0",
@@ -48,17 +49,20 @@
         "webpack-merge": "^5.9.0"
     },
     "dependencies": {
+        "@box2d/core": "^0.10.0",
+        "@gameastic/box2d-testbed": "^1.0.0",
         "@gameastic/stats": "1.0.4",
         "@pixi/layout": "^0.3.4",
+        "@pixi/ui": "^0.10.1",
+        "@tweenjs/tween.js": "^21.0.0",
         "cannon-es": "^0.20.0",
         "cannon-es-debugger": "^1.0.0",
         "gsap": "^3.11.5",
-        "pixi-stats": "^1.2.2",
-        "pixi.js": "^7.2.4",
-        "three": "^0.152.2",
         "matter-js": "^0.19.0",
-        "tweedle.js": "^2.1.0",
-        "@tweenjs/tween.js": "^21.0.0",
-        "pixi-projection": "^1.0.0"
+        "pixi-projection": "^1.0.0",
+        "pixi-stats": "^1.2.2",
+        "pixi.js": "^7.3.1",
+        "three": "^0.152.2",
+        "tweedle.js": "^2.1.0"
     }
 }
