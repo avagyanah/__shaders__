@@ -17,7 +17,7 @@ export class Box {
 
     private _createView(): Container {
         const sprite = Sprite.from(assets.images.box1);
-        sprite.anchor.set(0.5, 1);
+        sprite.anchor.set(0.5, 0);
 
         const view = new Container();
         view.addChild(sprite);

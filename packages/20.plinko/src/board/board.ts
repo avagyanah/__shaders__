@@ -1,5 +1,5 @@
 import Matter from 'matter-js';
-import { Container, Point, Sprite, Texture } from 'pixi.js';
+import { Container, Point, Sprite } from 'pixi.js';
 import { assets } from '../assets';
 import { Ball } from './ball';
 import { Box } from './box';
@@ -19,7 +19,7 @@ let diffX = 0;
 let diffY = 0;
 
 const pinRad = 28;
-const ballRad = 30;
+const ballRad = 28;
 
 let scale = 1;
 
@@ -51,7 +51,7 @@ export class Board extends Container {
     }
 
     public addBall(): void {
-        const ball = new Ball(this._balls.length, new Point(0, 80), ballRad);
+        const ball = new Ball(this._balls.length, new Point(0, 0), ballRad);
         ball.view.scale.set(scale);
         Matter.World.addBody(Board._engine.world, ball.body);
 
@@ -70,8 +70,12 @@ export class Board extends Container {
         this._rows = rows;
 
         this._calculateScale(rows);
+
         this._removePins();
+        this._removeBoxes();
+
         this._createPins();
+        this._createBoxes();
     }
 
     private _calculateScale(rows: number): void {
@@ -79,12 +83,11 @@ export class Board extends Container {
         const scaleFactor = Math.pow(minRows / rows, 0.85);
         scale = Math.min(1, scaleFactor);
 
-        // const scaleBottom = Math.pow(scale, 0.4);
-        const scaleBottom = Math.pow(scale, 0.4);
-        const scaleTop = Math.pow(scale, 0.7);
+        const scaleBottom = Math.pow(scale, 0.3);
+        const scaleTop = Math.pow(scale, 0.4);
 
         /* paddings & gaps */
-        padTop = 280 * scaleTop;
+        padTop = 250 * scaleTop;
         padBottom = 240 * scaleBottom;
 
         const sf = height / (height - (padTop + padBottom));
@@ -108,25 +111,21 @@ export class Board extends Container {
             pin.view.destroy();
             Matter.World.remove(Board._engine.world, pin.body);
         });
+    }
 
+    private _removeBoxes(): void {
         this._boxes.forEach((box) => {
             box.view.destroy();
         });
     }
 
     private _createPins(): void {
-        const gx = gapX;
-        const gy = gapY;
-
-        const dx = 0;
-        const dy = padTop;
-
         for (let i = 0; i < this._rows; i++) {
             for (let j = 0; j <= i; j++) {
-                const x = (j - i / 2) * gx + dx;
-                const y = i * gy + dy;
+                const x = (j - i / 2) * gapX;
+                const y = i * gapY + padTop;
 
-                const pin = new Pin(this._pins.length, new Point(x, y - 40), pinRad);
+                const pin = new Pin(this._pins.length, new Point(x, y), pinRad);
                 pin.view.scale.set(scale);
                 Matter.World.addBody(Board._engine.world, pin.body);
 
@@ -134,13 +133,18 @@ export class Board extends Container {
                 this.addChild(pin.view);
             }
         }
+    }
+
+    private _createBoxes(): void {
+        const boxScale = Math.pow(scale, 0.5);
+        const boxGapScale = Math.pow(scale, 1.4);
 
         for (let i = 0; i <= this._rows; i++) {
-            const x = (i - this._rows / 2) * gx + dx;
-            const y = this._rows * gy + dy;
+            const x = (i - this._rows / 2) * gapX;
+            const y = this._rows * gapY + padTop;
 
-            const box = new Box(this._pins.length, new Point(x, y));
-            box.view.scale.set(Math.pow(scale, 0.5));
+            const box = new Box(this._pins.length, new Point(x, y - 120 * boxGapScale));
+            box.view.scale.set(boxScale);
 
             this._boxes.push(box);
             this.addChild(box.view);
@@ -148,23 +152,24 @@ export class Board extends Container {
     }
 }
 
-class BoardView extends Sprite {
+class BoardView extends Container {
     public constructor() {
-        super(Texture.from(assets.images.field));
+        super();
 
-        this.anchor.set(0.5, 0);
-        this.position.set(6, 0);
+        const bg = Sprite.from(assets.images.field);
+        bg.anchor.set(0.5, 0);
+        bg.position.set(6, 0);
 
         const s = 1.8;
 
         const cosoL = Sprite.from(assets.images.coso);
-        cosoL.position.set(-width / 2 - 10, height - 50);
+        cosoL.position.set(-width / 2, height - 50);
         cosoL.scale.set(s, s);
 
         const cosoR = Sprite.from(assets.images.coso);
         cosoR.position.set(width / 2 + 10, height - 50);
         cosoR.scale.set(-s, s);
 
-        this.addChild(cosoL, cosoR);
+        this.addChild(bg, cosoL, cosoR);
     }
 }
