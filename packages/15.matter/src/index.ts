@@ -144,15 +144,6 @@ class App extends PixiApp {
         Matter.Events.on(engine, 'collisionStart', (e: any) => {
             this.ball.body.isStatic = true;
             return;
-            // const vel = calculateVelocity(this.ball.body, padX / 2, padY, Math.random() < 0.5 ? 1 : -1);
-            const vel = calculateVelocity(this.ball.body, padX / 2, padY / 2, 1);
-            Matter.Body.setSpeed(this.ball.body, 0);
-            Matter.Body.setVelocity(this.ball.body, { x: 0, y: 0 });
-            Matter.Body.setVelocity(this.ball.body, { x: vel.x, y: 0 });
-            // e.pairs[0].bodyA.isSensor = true;
-
-            // Matter.Body.setVelocity(this.ball.body, { x: 0, y: 0 });
-            this.ball.body.isStatic = false;
         });
 
         /* UPDATE */

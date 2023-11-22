@@ -29,7 +29,8 @@
         "start:tweedle": "npm run start -w tweedle",
         "start:projectile": "npm run start -w projectile",
         "start:skew": "npm run start -w skew",
-        "start:box2d": "npm run start -w box2d"
+        "start:box2d": "npm run start -w box2d",
+        "start:plinko": "npm run start -w plinko"
     },
     "devDependencies": {
         "@types/matter-js": "^0.19.2",

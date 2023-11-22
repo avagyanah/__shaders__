@@ -1,7 +1,7 @@
 import { b2World } from '@box2d/core';
 import { Graphics } from 'pixi.js';
 import { PixiApp } from '../../../shared/pixi';
-import { Board } from './board/baord';
+import { Board } from './board/board';
 import { PS } from './constants';
 import { Box2dDraw } from './testbed';
 

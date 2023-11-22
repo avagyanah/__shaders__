@@ -1,3 +1,15 @@
 {
-    "words": ["pixi", "glsl", "verts", "indeces", "wireframes", "gameastic", "aabb", "aabbs"]
+    "words": [
+        "pixi",
+        "glsl",
+        "verts",
+        "indeces",
+        "wireframes",
+        "gameastic",
+        "aabb",
+        "aabbs",
+        "plinko",
+        "tweenjs",
+        "gsap"
+    ]
 }
