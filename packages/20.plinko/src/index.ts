@@ -40,8 +40,8 @@ class App extends PixiApp {
 
         this._board = new Board();
         this._board.position.set(width * 0.5, height * 0.05);
-        this._board.initRows(8);
-        this._board.initRows(12);
+        // this._board.initRows(8);
+        // this._board.initRows(12);
         this._board.initRows(16);
         this._board.scale.set(0.41);
         this.stage.addChild(this._board);

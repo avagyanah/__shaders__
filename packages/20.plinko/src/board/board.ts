@@ -136,7 +136,7 @@ export class Board extends Container {
     }
 
     private _createBoxes(): void {
-        const boxScale = Math.pow(scale, 0.5);
+        const boxScale = Math.pow(scale, 0.55);
         const boxGapScale = Math.pow(scale, 1.4);
 
         for (let i = 0; i <= this._rows; i++) {
