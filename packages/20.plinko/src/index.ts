@@ -16,7 +16,7 @@ class App extends PixiApp {
     public init(): void {
         const runner = Matter.Runner.create();
         const engine = Matter.Engine.create({
-            gravity: { x: 0, y: 1, scale: 0.004 },
+            gravity: { x: 0, y: 1, scale: 0.001 },
         });
 
         const div = <HTMLCanvasElement>getElementById('game_div');
@@ -40,16 +40,16 @@ class App extends PixiApp {
 
         this._board = new Board();
         this._board.position.set(width * 0.5, height * 0.05);
-        // this._board.initRows(8);
-        this._board.initRows(16);
+        this._board.initRows(8);
+        // this._board.initRows(16);
         // this._board.initRows(12);
         // this._board.initRows(30);
         this._board.scale.set(0.41);
         this.stage.addChild(this._board);
 
-        // setTimeout(() => {
-        //     this._board.addBall();
-        // }, 400);
+        setTimeout(() => {
+            this._board.addBall();
+        }, 400);
 
         // let vector = 1;
         // let rows = 8;
@@ -61,7 +61,7 @@ class App extends PixiApp {
         //     if (rows === 16 || rows === 8) {
         //         vector *= -1;
         //     }
-        // }, 200);
+        // }, 400);
         /* ______________________________ */
 
         // document.onkeyup = (ev) => {
@@ -85,7 +85,7 @@ class App extends PixiApp {
         /* UPDATE */
         // this.ticker.maxFPS = 30;
         this.ticker.add(() => {
-            Matter.Runner.tick(runner, engine, this.ticker.FPS);
+            // Matter.Runner.tick(runner, engine, 1 / 60);
             // this._world.Step(1 / 40, {
             //     positionIterations: 1,
             //     velocityIterations: 1,

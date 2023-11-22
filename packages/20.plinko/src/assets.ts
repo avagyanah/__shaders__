@@ -1,12 +1,12 @@
 export const assets = {
     images: {
-        floor: require('../assets/images/floor.png'),
-        floor2: require('../assets/images/floor2.png'),
         field: require('../assets/images/field.png'),
-        // field2: require('../assets/images/field2.png'),
-        field_orig: require('../assets/images/field_orig.png'),
+        coso: require('../assets/images/coso.png'),
         pin: require('../assets/images/pin.png'),
         ball: require('../assets/images/ball.png'),
+        box1: require('../assets/images/box1.png'),
+        box2: require('../assets/images/box2.png'),
+        box3: require('../assets/images/box3.png'),
     },
 
     shaders: {

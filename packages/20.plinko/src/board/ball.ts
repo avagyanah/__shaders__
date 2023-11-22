@@ -84,7 +84,7 @@ export class Ball {
 
     private _createBody(): Matter.Body {
         const body = Matter.Bodies.circle(this._position.x, this._position.y, this._radius, {
-            isStatic: true,
+            isStatic: false,
             friction: 0,
             restitution: 0.5,
         });
