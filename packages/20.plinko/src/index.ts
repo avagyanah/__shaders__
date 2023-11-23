@@ -2,18 +2,23 @@ import TWEEN from '@tweenjs/tween.js';
 import Matter from 'matter-js';
 import { PixiApp } from '../../../shared/pixi';
 import { getElementById } from '../../../shared/utils';
+import { assets } from './assets';
 import { Board } from './board/board';
 
-window.addEventListener('load', () => {
+window.addEventListener('load', async () => {
     window.globals = { pixiApp: new App() };
-    window.globals.pixiApp.init();
+    await window.globals.pixiApp.init();
 });
 
 class App extends PixiApp {
     private _engine!: Matter.Engine;
     private _board!: Board;
 
-    public init(): void {
+    public async init(): Promise<void> {
+        /* LOADING */
+        const result = await new FontFace('BlenderPro', `url(${assets.fonts.BlenderPro})`).load();
+        document.fonts.add(result);
+
         const runner = Matter.Runner.create();
         const engine = Matter.Engine.create({
             gravity: { x: 0, y: 1, scale: 0.001 },

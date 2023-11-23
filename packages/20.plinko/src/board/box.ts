@@ -1,4 +1,4 @@
-import { Container, Sprite } from 'pixi.js';
+import { Container, Sprite, Text } from 'pixi.js';
 import { assets } from '../assets';
 import { riskConditions } from '../constants';
 
@@ -43,8 +43,18 @@ export class Box {
         const sprite = Sprite.from(assets.images[texture]);
         sprite.anchor.set(0.5, 0);
 
+        const text = new Text(`${multiplier}`, {
+            fontFamily: 'BlenderPro',
+            fontSize: 44,
+            fill: color,
+            fontWeight: '900',
+        });
+        text.height *= 1.08;
+        text.anchor.set(0.5, 0.5);
+        text.position.set(0, 60);
+
         const view = new Container();
-        view.addChild(sprite);
+        view.addChild(sprite, text);
 
         return view;
     }

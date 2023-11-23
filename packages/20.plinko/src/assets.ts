@@ -9,6 +9,10 @@ export const assets = {
         box3: require('../assets/images/box3.png'),
     },
 
+    fonts: {
+        BlenderPro: require('../assets/fonts/BlenderPro.woff2'),
+    },
+
     shaders: {
         default: {
             vert: require('../assets/shaders/default/vert.glsl'),
