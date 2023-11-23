@@ -24,6 +24,8 @@ const ballRad = 28;
 let scale = 1;
 
 export class Board extends Container {
+    private static _risk: Risk;
+    private static _multipliers: Record<number, number[]>;
     private static _engine: Matter.Engine;
 
     private readonly _pins: Pin[];
@@ -42,8 +44,16 @@ export class Board extends Container {
         this._boxes = [];
     }
 
-    public static setup(engine: Matter.Engine): void {
+    public static setupEngine(engine: Matter.Engine): void {
         Board._engine = engine;
+    }
+
+    public static setupRisk(risk: Risk): void {
+        Board._risk = risk;
+    }
+
+    public static setupMultipliers(multipliers: Record<number, number[]>): void {
+        Board._multipliers = multipliers;
     }
 
     public update(): void {
@@ -111,12 +121,16 @@ export class Board extends Container {
             pin.view.destroy();
             Matter.World.remove(Board._engine.world, pin.body);
         });
+
+        this._pins.length = 0;
     }
 
     private _removeBoxes(): void {
         this._boxes.forEach((box) => {
             box.view.destroy();
         });
+
+        this._boxes.length = 0;
     }
 
     private _createPins(): void {
@@ -143,7 +157,12 @@ export class Board extends Container {
             const x = (i - this._rows / 2) * gapX;
             const y = this._rows * gapY + padTop;
 
-            const box = new Box(this._pins.length, new Point(x, y - 120 * boxGapScale));
+            const box = new Box(
+                this._boxes.length,
+                new Point(x, y - 120 * boxGapScale),
+                Board._multipliers[this._rows][i],
+                Board._risk
+            );
             box.view.scale.set(boxScale);
 
             this._boxes.push(box);
