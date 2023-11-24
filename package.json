@@ -30,7 +30,8 @@
         "start:projectile": "npm run start -w projectile",
         "start:skew": "npm run start -w skew",
         "start:box2d": "npm run start -w box2d",
-        "start:plinko": "npm run start -w plinko"
+        "start:plinko": "npm run start -w plinko",
+        "start:plinko2": "npm run start -w plinko2"
     },
     "devDependencies": {
         "@types/matter-js": "^0.19.2",
