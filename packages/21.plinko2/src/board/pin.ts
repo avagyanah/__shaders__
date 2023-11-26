@@ -32,12 +32,20 @@ export class Pin {
     private _createView(): Container {
         const { _scale: scale, _position: pos } = this;
 
-        const sprite = Sprite.from(assets.images.pin);
+        // const sprite = Sprite.from(assets.images.pin);
+        // sprite.anchor.set(0.5);
+
+        const diameter = this._radius * 2;
+
+        const sprite = Sprite.from(assets.images.ball);
         sprite.anchor.set(0.5);
+        sprite.tint = 0xffffff;
+        sprite.width = diameter;
+        sprite.height = diameter;
 
         const view = new Container();
-        view.scale.set(scale);
-        view.position.set(pos.x, pos.y + 3);
+        // view.scale.set(scale);
+        view.position.set(pos.x, pos.y);
         view.addChild(sprite);
 
         // TEMP
@@ -51,12 +59,12 @@ export class Pin {
 
         const bodyDef: b2BodyDef = {
             type: b2BodyType.b2_staticBody,
-            position: { x: pos.x / PHYS_SCALE, y: -(pos.y * scale) / PHYS_SCALE },
+            position: { x: pos.x / PHYS_SCALE, y: -pos.y / PHYS_SCALE },
         };
 
         const fixtureDef: b2FixtureDef = {
-            shape: new b2CircleShape(((this._radius - 7) * scale) / PHYS_SCALE),
-            // shape: new b2CircleShape(0.1),
+            shape: new b2CircleShape(this._radius / PHYS_SCALE),
+            // shape: new b2CircleShape(0.01),
             userData: { id: this._id },
         };
 

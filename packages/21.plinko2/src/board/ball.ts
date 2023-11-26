@@ -13,7 +13,7 @@ export class Ball {
     private readonly _radius: number;
     private readonly _position: IPoint;
 
-    private _paths: Path[];
+    private _path: Path;
 
     public constructor(id: number, position: IPoint, scale: number, radius: number) {
         this._id = id;
@@ -32,7 +32,15 @@ export class Ball {
 
     public update(): void {
         // this.sync();
-        // const { xx, yy, rr } = this._paths.shift();
+        // return;
+
+        if (this._path.length === 0) {
+            return;
+        }
+
+        const { 0: x, 1: y } = this._path.shift();
+
+        this.view.position.set(x, y);
     }
 
     public sync(): void {
@@ -44,9 +52,7 @@ export class Ball {
     }
 
     public setPath(path: Path): void {
-        console.warn(path);
-
-        // this._paths.push(path);
+        this._path = path;
     }
 
     private _createView(): Container {
@@ -64,12 +70,13 @@ export class Ball {
         dot.y = -diameter * 0.25;
         dot.anchor.set(0.5);
         dot.tint = 0xff0000;
+        dot.visible = false;
 
         sprite.width = diameter;
         sprite.height = diameter;
 
         const view = new Container();
-        view.scale.set(scale);
+        // view.scale.set(scale);
         view.position.set(pos.x, pos.y);
         view.addChild(sprite, dot);
 
@@ -84,12 +91,13 @@ export class Ball {
 
         const bodyDef: b2BodyDef = {
             type: b2BodyType.b2_dynamicBody,
-            position: { x: pos.x / PHYS_SCALE, y: -pos.y / PHYS_SCALE },
+            // gravityScale: 8,
+            // position: { x: pos.x / PHYS_SCALE, y: -pos.y / PHYS_SCALE },
         };
 
         const fixtureDef: b2FixtureDef = {
-            shape: new b2CircleShape((this._radius * scale) / PHYS_SCALE),
-            // shape: new b2CircleShape(0.1),
+            shape: new b2CircleShape(this._radius / PHYS_SCALE),
+            // shape: new b2CircleShape(0.01),
             density: 1.0,
             restitution: 0.6,
         };

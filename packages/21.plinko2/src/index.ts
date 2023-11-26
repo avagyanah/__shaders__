@@ -98,7 +98,7 @@ class App extends PixiApp {
                 case 'd':
                     this._board.addBall();
                     // this._board.addChild(gr);
-                    Phys.onBallAdded(this._board.balls[0].body);
+                    Phys.onBallAdded(this._board.balls[0].body, this._board.padTop + this._board.gapY * 2);
 
                     document.onkeyup = () => {
                         //

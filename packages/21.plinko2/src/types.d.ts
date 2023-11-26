@@ -7,5 +7,5 @@ interface IPoint {
     y: number;
 }
 
-type PathEntry = { x: number; y: number; r: number } | { id: string };
+type PathEntry = [number, number, number];
 type Path = PathEntry[];
