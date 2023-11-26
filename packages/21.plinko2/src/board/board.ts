@@ -1,6 +1,5 @@
 import type { b2World } from '@box2d/core';
-import { Tween } from '@tweenjs/tween.js';
-import { Container, Point, Sprite } from 'pixi.js';
+import { Container, Graphics, Point, Sprite } from 'pixi.js';
 import { assets } from '../assets';
 import { alpha } from '../constants';
 import { Ball } from './ball';
@@ -19,7 +18,7 @@ let gapX = 0;
 let gapY = 0;
 
 const pinRad = 28;
-const ballRad = 28;
+const ballRad = 30;
 
 let scale = 1;
 let scaleBottom = 1;
@@ -46,6 +45,14 @@ export class Board extends Container {
         this._boxes = [];
     }
 
+    public get gapY(): number {
+        return gapY;
+    }
+
+    public get padTop(): number {
+        return padTop;
+    }
+
     public get balls(): Ball[] {
         return this._balls;
     }
@@ -62,46 +69,126 @@ export class Board extends Container {
         this._balls.forEach((ball) => ball.update());
     }
 
-    public addBall(): void {
-        // const ball = new Ball(this._balls.length, new Point(3.3, ballRad * 2 * scale), scale, ballRad);
-        const ball = new Ball(this._balls.length, new Point(0, ballRad * 2 * scale), scale, ballRad);
+    public readonly getPath = (source: Ball, indexes: number[], offsetY: number): Path => {
+        const { sign, abs } = Math;
+
+        const result: Path = [];
+
+        const ballPos = source.view.position.clone();
+        ballPos.set(ballPos.x, ballPos.y - offsetY);
+
+        for (let i = 0; i < indexes.length; i++) {
+            const index = indexes[i];
+            const dest = this._pins[index];
+            const destPos = dest.view.position;
+
+            const path = paths['path1'];
+            const { offset, points } = path;
+
+            const offX = destPos.x - ballPos.x;
+            const offY = destPos.y - ballPos.y;
+
+            ballPos.copyFrom(destPos);
+
+            const fx = offX / offset.x;
+            const fy = offY / offset.y;
+
+            for (let i = 0; i < points.length; i += 3) {
+                const x = points[i + 0] * fx;
+                const y = points[i + 1] * fy;
+                const r = points[i + 2];
+
+                result.push({ x, y, r });
+            }
+        }
+
+        return result;
+
+        // const ballPos = source.view.position;
+
+        // const dest = this._pins[index];
+        // const destPos = dest.view.position;
+
+        // const dx = destPos.x - ballPos.x;
+        // const dy = destPos.y - ballPos.y - (pinRad - 6 + ballRad) * scale;
+
+        // console.warn(ballPos, destPos);
+
+        // const { offset, points } = paths[pathID];
+
+        // const xx = [];
+        // const yy = [];
+        // const rr = [];
+
+        // const fx = dx / offset.x;
+        // const fy = dy / offset.y;
+
+        // for (let i = 0; i < points.length; i += 3) {
+        //     const x = points[i + 0] * fx;
+        //     const y = points[i + 1] * fy;
+        //     const r = points[i + 2];
+
+        //     const ax = abs(x);
+        //     const ay = abs(y);
+        //     const ar = abs(r);
+
+        //     const sx = sign(x);
+        //     const sy = sign(y);
+        //     const sr = sign(r);
+
+        //     xx.push(sx === 1 ? `+${ax}` : `-${ax}`);
+        //     yy.push(sy === 1 ? `+${ay}` : `-${ay}`);
+        //     rr.push(sr === 1 ? `+${ar}` : `-${ar}`);
+        // }
+
+        // return { xx, yy, rr, length: rr.length };
+    };
+
+    public async addBall(): Promise<void> {
+        const ball = new Ball(this._balls.length, new Point(0, 0), scale, ballRad);
+        // const ball = new Ball(this._balls.length, new Point(0, padTop + gapY), scale, ballRad);
 
         this._balls.push(ball);
         this.addChild(ball.view);
 
-        console.warn(scale);
+        const path = this.getPath(ball, [0], padTop + gapY);
+        ball.setPath(path);
 
-        const dy = padTop - (pinRad - 6 + ballRad) * scale;
-        const sx = dx / 250;
-        const sy = dy / 250;
+        // return;
+        // await new Promise<void>((resolve) => {
+        //     const speed = path1.xx.length * 15;
+        //     const tween = new Tween(ball.view);
+        //     tween.to(
+        //         {
+        //             x: path1.xx,
+        //             y: path1.yy,
+        //             rotation: path1.rr,
+        //         },
+        //         speed
+        //     );
+        //     tween.onComplete(() => {
+        //         resolve();
+        //     });
+        //     tween.start();
+        // });
 
-        const p = paths['X:250.308,X:250'];
-
-        const xx = [];
-        const yy = [];
-        const rr = [];
-
-        for (let i = 0; i < p.length; i += 3) {
-            const x = p[i + 0] * sx;
-            const y = p[i + 1] * sy;
-            const r = p[i + 2];
-
-            xx.push(x);
-            yy.push(y);
-            rr.push(r);
-        }
-
-        const speed = p.length * 5;
-        const tween = new Tween(ball.view);
-        tween.to(
-            {
-                x: xx,
-                y: yy,
-                rotation: rr,
-            },
-            speed
-        );
-        tween.start();
+        // const path2 = this.getPath(ball, 2, 'path2');
+        // await new Promise<void>((resolve) => {
+        //     const speed = path2.xx.length * 15;
+        //     const tween = new Tween(ball.view);
+        //     tween.to(
+        //         {
+        //             x: path2.xx,
+        //             y: path2.yy,
+        //             rotation: path2.rr,
+        //         },
+        //         speed
+        //     );
+        //     tween.onComplete(() => {
+        //         resolve();
+        //     });
+        //     tween.start();
+        // });
     }
 
     public initRows(rows: number): void {
@@ -134,18 +221,17 @@ export class Board extends Container {
         gapX = (width - 20) / (rows - 1) / sf;
 
         // TEMP
-        const dy = padTop;
+        const dy = gapY;
         const dx = gapX;
 
         window['dx'] = dx;
         window['dy'] = dy;
 
-        // const gr = new Graphics();
-        // const dy = padTop - ballRad * scale;
-        // gr.beginFill(0xff0000);
-        // gr.drawRect(0, 0, 4, dy);
-        // gr.endFill();
-        // this.addChild(gr);
+        const gr = new Graphics();
+        gr.beginFill(0xff0000);
+        gr.drawRect(0, padTop, 4, dy);
+        gr.endFill();
+        this.addChild(gr);
     }
 
     private _createView(): BoardView {

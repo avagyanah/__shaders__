@@ -37,7 +37,7 @@ export class Pin {
 
         const view = new Container();
         view.scale.set(scale);
-        view.position.set(pos.x, pos.y);
+        view.position.set(pos.x, pos.y + 3);
         view.addChild(sprite);
 
         // TEMP
@@ -51,12 +51,12 @@ export class Pin {
 
         const bodyDef: b2BodyDef = {
             type: b2BodyType.b2_staticBody,
-            position: { x: pos.x / PHYS_SCALE, y: -(pos.y - 3 * scale) / PHYS_SCALE },
+            position: { x: pos.x / PHYS_SCALE, y: -(pos.y * scale) / PHYS_SCALE },
         };
 
         const fixtureDef: b2FixtureDef = {
-            // shape: new b2CircleShape(((this._radius - 6) * scale) / PHYS_SCALE),
-            shape: new b2CircleShape(0.01),
+            shape: new b2CircleShape(((this._radius - 7) * scale) / PHYS_SCALE),
+            // shape: new b2CircleShape(0.1),
             userData: { id: this._id },
         };
 

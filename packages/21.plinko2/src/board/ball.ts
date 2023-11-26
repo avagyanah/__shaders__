@@ -13,6 +13,8 @@ export class Ball {
     private readonly _radius: number;
     private readonly _position: IPoint;
 
+    private _paths: Path[];
+
     public constructor(id: number, position: IPoint, scale: number, radius: number) {
         this._id = id;
         this._scale = scale;
@@ -30,6 +32,7 @@ export class Ball {
 
     public update(): void {
         // this.sync();
+        // const { xx, yy, rr } = this._paths.shift();
     }
 
     public sync(): void {
@@ -38,6 +41,12 @@ export class Ball {
 
         this.view.position.set(pos.x * PHYS_SCALE, -pos.y * PHYS_SCALE);
         this.view.angle = -angle;
+    }
+
+    public setPath(path: Path): void {
+        console.warn(path);
+
+        // this._paths.push(path);
     }
 
     private _createView(): Container {
@@ -49,13 +58,20 @@ export class Ball {
         sprite.anchor.set(0.5);
         sprite.tint = 0xffff00;
 
+        const dot = Sprite.from(assets.images.ball);
+        dot.width = diameter * 0.2;
+        dot.height = diameter * 0.2;
+        dot.y = -diameter * 0.25;
+        dot.anchor.set(0.5);
+        dot.tint = 0xff0000;
+
         sprite.width = diameter;
         sprite.height = diameter;
 
         const view = new Container();
         view.scale.set(scale);
         view.position.set(pos.x, pos.y);
-        view.addChild(sprite);
+        view.addChild(sprite, dot);
 
         // TEMP
         view.alpha = alpha;
@@ -72,8 +88,8 @@ export class Ball {
         };
 
         const fixtureDef: b2FixtureDef = {
-            // shape: new b2CircleShape(((this._radius - 1) * scale) / PHYS_SCALE),
-            shape: new b2CircleShape(0.01),
+            shape: new b2CircleShape((this._radius * scale) / PHYS_SCALE),
+            // shape: new b2CircleShape(0.1),
             density: 1.0,
             restitution: 0.6,
         };

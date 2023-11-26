@@ -6,6 +6,7 @@ import { Box2dDraw } from './testbed';
 
 let ball: b2Body;
 let record = false;
+
 window['path'] = [];
 
 export class Phys {
@@ -31,8 +32,8 @@ export class Phys {
 
         const contactListener = new b2ContactListener();
 
-        // contactListener.BeginContact = (e: b2Contact) => {
-        contactListener.EndContact = (e: b2Contact) => {
+        contactListener.BeginContact = (e: b2Contact) => {
+            // contactListener.EndContact = (e: b2Contact) => {
             const pinFixture = e.GetFixtureA();
             const pinData = pinFixture.GetUserData();
 
@@ -40,11 +41,10 @@ export class Phys {
                 // case 0:
                 //     record = true;
                 //     break;
-                case 0:
+                case 4:
                     record = false;
-
+                    // ball.SetLinearVelocity({ x: 0, y: 0 });
                     Phys.record(ball);
-
                     break;
             }
         };
@@ -67,11 +67,10 @@ export class Phys {
         const pos = ball.GetPosition();
         const angle = ball.GetAngle();
 
-        window['path'].push(
-            //
-            +(pos.x * PHYS_SCALE).toFixed(2),
-            +(-pos.y * PHYS_SCALE).toFixed(2),
-            +-angle.toFixed(2)
-        );
+        const x = +(pos.x * PHYS_SCALE).toFixed(1);
+        const y = -(pos.y * PHYS_SCALE).toFixed(1);
+        const r = -angle.toFixed(1);
+
+        window['path'].push(x, y, r);
     }
 }
