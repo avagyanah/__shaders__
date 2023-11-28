@@ -7,6 +7,17 @@ import { Box } from './box';
 import { pathPairs, paths } from './paths';
 import { Pin } from './pin';
 
+// const pyramid: number[][] = [
+//     [0],
+//     [1, 2],
+//     [3, 4, 5],
+//     [6, 7, 8, 9],
+//     [10, 11, 12, 13],
+//     [14, 15, 16, 17, 18],
+//     [19, 20, 21, 22, 23, 24],
+//     [25, 26, 27, 28, 29, 30, 31],
+// ];
+
 const minRows = 8;
 const width = 1920;
 const height = 1660;
@@ -93,21 +104,20 @@ export class Board extends Container {
         return ids;
     };
 
-    public readonly getPath = (source: Ball, indexes: number[]): Path => {
+    public readonly getPath = (source: Ball, directions: Direction[]): Path => {
         const result: Path = [];
-        const pathsIDs: string[] = this.getPathIDs(3);
+        const pinIDs: number[] = this.getPinIndexes(directions);
+        const pathsIDs: string[] = this.getPathIDs(directions.length);
 
         const ballPos = source.view.position.clone();
 
-        for (let i = 0; i < indexes.length; i++) {
-            const index = indexes[i];
+        for (let i = 0; i < pinIDs.length; i++) {
+            const index = pinIDs[i];
             const dest = this._pins[index];
             const destPos = dest.view.position.clone();
-
             const dirX = Math.sign(destPos.x - ballPos.x);
 
             const path = paths[pathsIDs[i]];
-
             const { points } = path;
 
             for (let i = 0; i < points.length; i += 3) {
@@ -121,17 +131,16 @@ export class Board extends Container {
             ballPos.set(destPos.x, destPos.y);
         }
 
-        // for (let i = 0; i < result.length; i++) {
-        //     if (i === result.length - 1) {
-        //         continue
-        //     }
+        return result;
+    };
 
-        //     const curr = result[i];
-        //     const next = result[i + 1]
+    public readonly getPinIndexes = (directions: Direction[]): number[] => {
+        let position = 0;
+        const result = [position];
 
-        //     const dx = curr
-
-        // }
+        for (let i = 1; i < directions.length; i++) {
+            result.push((position = position + i + Math.max(0, directions[i])));
+        }
 
         return result;
     };
@@ -146,14 +155,10 @@ export class Board extends Container {
         this._balls.push(ball);
         this.addChild(ball.view);
 
-        // const path = this.getPath(ball, [0, 2, 5, 9, 14, 20, 27, 35, 44, 54, 65, 77, 90, 104, 119, 135]);
-        // const path = this.getPath(ball, [0, 2, 4, 7, 12, 17, 23, 31, 40, 50, 60, 72, 85, 99, 114, 129]);
-        // const path = this.getPath(ball, [0, 2, 4, 7, 12, 17, 23, 31]);
-
         const path = this.getPath(
             //
             ball,
-            [0, 2, 4]
+            [0, 1, -1, 1, -1, 1, 1, 1]
         );
 
         ball.setPath(path);
