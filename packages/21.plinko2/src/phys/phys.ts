@@ -6,6 +6,7 @@ import { Box2dDraw } from './testbed';
 
 let ball: b2Body;
 let record = false;
+let offsetX = 0;
 let offsetY = 0;
 let step = PHYS_STEP;
 
@@ -20,12 +21,15 @@ export class Phys {
         //
     }
 
-    public static onBallAdded(ballBody: b2Body, padY: number): void {
+    public static onBallAdded(ballBody: b2Body, padY: number, padX: number): void {
         ball = ballBody;
         offsetY = padY;
+        offsetX = padX;
 
-        /* path0 */
-        // record = true;
+        /* path1 */
+        record = true;
+        // ball.ApplyLinearImpulseToCenter({ x: 1, y: 0 });
+
         // step = 0;
     }
 
@@ -44,33 +48,74 @@ export class Phys {
             const pinData = pinFixture.GetUserData();
 
             switch (pinData.id) {
-                case 0:
-                    /* path0 */
-                    // record = false;
-                    // step = 0;
-                    break;
-
                 case 4:
+                    record = false;
+                    // record = true;
+
                     /* path0 */
+                    Phys.record(ball);
+                    step = 0;
+
+                    /* path1 */
                     // record = false;
                     // Phys.record(ball);
                     // step = 0;
 
-                    /* path1 */
-                    record = true;
-                    ball.ApplyLinearImpulseToCenter({ x: 7.9, y: -4 });
-
                     /* path2 */
                     // record = true;
+
+                    /* center */
+                    // ball.ApplyLinearImpulseToCenter({ x: 8.6, y: -4 });
+                    /* right */
+                    // ball.ApplyLinearImpulseToCenter({ x: 11, y: 0.6 });
+                    /* left */
+                    // ball.ApplyLinearImpulseToCenter({ x: 3, y: 0 });
+                    // ball.GetFixtureList().SetRestitution(0.2);
+
+                    /* path3 */
+                    // record = true;
+
+                    /* center */
                     // ball.ApplyLinearImpulseToCenter({ x: 0.57, y: -0 });
+                    /* right */
+                    // ball.ApplyLinearImpulseToCenter({ x: 10, y: -4 });
+                    /* left */
+                    // ball.ApplyLinearImpulseToCenter({ x: 0.1, y: -0 });
+
+                    /* path4 */
+                    // record = true;
+
+                    // ball.ApplyLinearImpulseToCenter({ x: 14.8, y: -3 });
+
+                    /* path5 */
+                    // record = true;
+
+                    // ball.ApplyLinearImpulseToCenter({ x: 16.6, y: 0 });
+
+                    /* path6 */
+                    // record = true;
+
+                    // ball.ApplyLinearImpulseToCenter({ x: 30, y: 0 });
 
                     break;
 
-                case 8:
-                    record = false;
-                    Phys.record(ball);
-                    step = 0;
-                    break;
+                // case 9:
+                //     Phys.record(ball);
+
+                //     break;
+                // case 8:
+                //     // step = 0;
+                //     record = true;
+                //     // Phys.record(ball);
+
+                //     break;
+
+                // case 13:
+                //     step = 0;
+                //     record = false;
+                //     Phys.record(ball);
+
+                //     break;
             }
         };
 
@@ -93,7 +138,7 @@ export class Phys {
         const pos = ball.GetPosition();
         const angle = ball.GetAngle();
 
-        const x = +(pos.x * PHYS_SCALE).toFixed(1);
+        const x = +(pos.x * PHYS_SCALE - offsetX).toFixed(1);
         const y = -(pos.y * PHYS_SCALE + offsetY).toFixed(1);
         const r = -angle.toFixed(1);
 

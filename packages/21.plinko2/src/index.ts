@@ -77,7 +77,7 @@ class App extends PixiApp {
 
         this._board.scale.set(0.4);
 
-        // this._board.addChild(gr);
+        this._board.addChild(gr);
         this.stage.addChild(this._board);
 
         // let vector = 1;
@@ -97,8 +97,12 @@ class App extends PixiApp {
             switch (ev.key) {
                 case 'd':
                     this._board.addBall();
-                    // this._board.addChild(gr);
-                    Phys.onBallAdded(this._board.balls[0].body, this._board.padTop + this._board.gapY * 2);
+                    this._board.addChild(gr);
+                    Phys.onBallAdded(
+                        this._board.balls[0].body,
+                        this._board.padTop + this._board.gapY * 1 - this._board.ballRad * 2,
+                        this._board.gapX * 0
+                    );
 
                     document.onkeyup = () => {
                         //

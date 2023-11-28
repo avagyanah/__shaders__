@@ -4,7 +4,7 @@ import { assets } from '../assets';
 import { PHYS_SCALE, alpha } from '../constants';
 import { Ball } from './ball';
 import { Box } from './box';
-import { paths } from './paths';
+import { pathPairs, paths } from './paths';
 import { Pin } from './pin';
 
 const minRows = 8;
@@ -43,14 +43,18 @@ export class Board extends Container {
     public constructor() {
         super();
 
-        this._view = this._createView();
         this._pins = [];
         this._balls = [];
         this._boxes = [];
+        this._view = this._createView();
     }
 
     public get gapY(): number {
         return gapY;
+    }
+
+    public get gapX(): number {
+        return gapX;
     }
 
     public get padTop(): number {
@@ -77,8 +81,21 @@ export class Board extends Container {
         this._balls.forEach((ball) => ball.update());
     }
 
+    public readonly getPathIDs = (rows: number): string[] => {
+        const ids: string[] = ['path0'];
+
+        for (let i = 1; i < rows; i++) {
+            const last = ids[ids.length - 1];
+            const id = sample(pathPairs[last]);
+            ids.push(id);
+        }
+
+        return ids;
+    };
+
     public readonly getPath = (source: Ball, indexes: number[]): Path => {
         const result: Path = [];
+        const pathsIDs: string[] = this.getPathIDs(3);
 
         const ballPos = source.view.position.clone();
 
@@ -87,24 +104,15 @@ export class Board extends Container {
             const dest = this._pins[index];
             const destPos = dest.view.position.clone();
 
-            const pi = Math.min(i + 1, 2);
-            // const pi = 3;
-            const path = paths[`path${pi}`];
-            // const path = paths['path1'];
+            const dirX = Math.sign(destPos.x - ballPos.x);
 
-            const { offset, points } = path;
+            const path = paths[pathsIDs[i]];
 
-            const offX = destPos.x - ballPos.x;
-            const offY = destPos.y - ballPos.y - (pinRad + pinRad);
-
-            const fx = offX / offset.x;
-            const fy = offY / offset.y;
-
-            console.warn(fy);
+            const { points } = path;
 
             for (let i = 0; i < points.length; i += 3) {
-                const x = points[i + 0] * fx + ballPos.x;
-                const y = points[i + 1] * fy + ballPos.y;
+                const x = dirX * points[i + 0] + ballPos.x;
+                const y = points[i + 1] + ballPos.y - (ballRad + ballRad);
                 const r = 0;
 
                 result.push([x, y, r]);
@@ -113,11 +121,23 @@ export class Board extends Container {
             ballPos.set(destPos.x, destPos.y);
         }
 
+        // for (let i = 0; i < result.length; i++) {
+        //     if (i === result.length - 1) {
+        //         continue
+        //     }
+
+        //     const curr = result[i];
+        //     const next = result[i + 1]
+
+        //     const dx = curr
+
+        // }
+
         return result;
     };
 
     public async addBall(): Promise<void> {
-        const ball = new Ball(this._balls.length, new Point(0, ballRad * 2), scale, ballRad);
+        const ball = new Ball(this._balls.length, new Point(0, padTop - gapY), scale, ballRad);
         // const ball = new Ball(this._balls.length, new Point(0, 0), scale, ballRad);
         const transform = new b2Transform();
         transform.SetPositionXY(0 / PHYS_SCALE, -(padTop + gapY) / PHYS_SCALE);
@@ -126,12 +146,17 @@ export class Board extends Container {
         this._balls.push(ball);
         this.addChild(ball.view);
 
-        // const path = this.getPath(ball, [0, 2, 4]);
+        // const path = this.getPath(ball, [0, 2, 5, 9, 14, 20, 27, 35, 44, 54, 65, 77, 90, 104, 119, 135]);
+        // const path = this.getPath(ball, [0, 2, 4, 7, 12, 17, 23, 31, 40, 50, 60, 72, 85, 99, 114, 129]);
+        // const path = this.getPath(ball, [0, 2, 4, 7, 12, 17, 23, 31]);
 
-        const path = this.getPath(ball, [0, 2, 4, 7, 12, 17, 23, 31]);
+        const path = this.getPath(
+            //
+            ball,
+            [0, 2, 4]
+        );
+
         ball.setPath(path);
-
-        console.warn(window['dx'], window['dy']);
     }
 
     public initRows(rows: number): void {
@@ -166,12 +191,14 @@ export class Board extends Container {
         pinRad = pinRad * scale;
         ballRad = ballRad * scale;
 
-        // TEMP
-        const dx = gapX - (pinRad + pinRad);
-        const dy = gapY - (pinRad + pinRad);
+        console.warn(gapX, gapY);
 
-        window['dx'] = dx;
-        window['dy'] = dy;
+        // // TEMP
+        // const dx = gapX;
+        // const dy = gapY;
+
+        // window['dx'] = dx;
+        // window['dy'] = dy;
 
         // const gr = new Graphics();
         // gr.beginFill(0xff0000);

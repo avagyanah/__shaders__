@@ -99,7 +99,7 @@ export class Ball {
             shape: new b2CircleShape(this._radius / PHYS_SCALE),
             // shape: new b2CircleShape(0.01),
             density: 1.0,
-            restitution: 0.6,
+            restitution: 0.3,
         };
 
         const body = Phys.world.CreateBody(bodyDef);
