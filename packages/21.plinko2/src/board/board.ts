@@ -35,8 +35,14 @@ let scale = 1;
 let scaleBottom = 1;
 let scaleTop = 1;
 
-export function sample<T>(list: T[]): T | undefined {
+const sequence: Direction[] = [0, 1, -1];
+
+export function _sample<T>(list: T[]): T | undefined {
     return list[Math.floor(Math.random() * list.length)];
+}
+
+export function _last<T>(list: T[]): T | undefined {
+    return list[list.length - 1];
 }
 
 export class Board extends Container {
@@ -92,31 +98,74 @@ export class Board extends Container {
         this._balls.forEach((ball) => ball.update());
     }
 
-    public readonly getPathIDs = (rows: number): string[] => {
-        const ids: string[] = ['path0'];
+    public readonly getPathIDs = (directions: Direction[]): string[] => {
+        // const ids: string[] = ['p_cc1'];
 
-        for (let i = 1; i < rows; i++) {
-            const last = ids[ids.length - 1];
-            const id = sample(pathPairs[last]);
-            ids.push(id);
+        const configs = [
+            {
+                from: 0,
+                to: 0,
+                velocity: 1,
+                paths: ['p_cc0'],
+            },
+        ];
+
+        console.warn(directions);
+
+        for (let i = 1; i < directions.length; i++) {
+            const last = _last(configs);
+            const conf = pathPairs.filter((c) => c.from === last.to && c.velocity === last.velocity);
+            console.warn(conf);
+
+            configs.push(_sample(conf));
         }
 
+        const ids: string[] = configs.map((c) => _sample(c.paths));
+
+        // return ['p_cc0', 'p_cl2', 'p_rr1', 'p_rl2', 'p_rc2'];
         return ids;
+
+        // // return ['p_cc0', 'p_cc1', 'p_cr1'];
+        // let prevDir: Direction = -directions[1] as Direction;
+
+        // for (let i = 1; i < directions.length; i++) {
+        //     const dir = (directions[i] * prevDir) as Direction;
+        //     const last = _last(ids);
+        //     const id = _sample(pathPairs2[last][dir]) as string;
+
+        //     ids.push(id);
+
+        //     prevDir = directions[i];
+        // }
+
+        // return ids;
+    };
+
+    public readonly getPinIndexes = (directions: Direction[]): number[] => {
+        let position = 0;
+        const result = [position];
+
+        for (let i = 1; i < directions.length; i++) {
+            position = position + i + Math.max(0, directions[i]);
+            result.push(position);
+        }
+
+        return result;
     };
 
     public readonly getPath = (source: Ball, directions: Direction[]): Path => {
         const result: Path = [];
         const pinIDs: number[] = this.getPinIndexes(directions);
-        const pathsIDs: string[] = this.getPathIDs(directions.length);
+        const pathsIDs: string[] = this.getPathIDs(directions);
 
         const ballPos = source.view.position.clone();
 
         for (let i = 0; i < pinIDs.length; i++) {
             const index = pinIDs[i];
             const dest = this._pins[index];
-            const destPos = dest.view.position.clone();
-            const dirX = Math.sign(destPos.x - ballPos.x);
+            const destPos = dest.view.position;
 
+            const dirX = directions[i];
             const path = paths[pathsIDs[i]];
             const { points } = path;
 
@@ -128,18 +177,7 @@ export class Board extends Container {
                 result.push([x, y, r]);
             }
 
-            ballPos.set(destPos.x, destPos.y);
-        }
-
-        return result;
-    };
-
-    public readonly getPinIndexes = (directions: Direction[]): number[] => {
-        let position = 0;
-        const result = [position];
-
-        for (let i = 1; i < directions.length; i++) {
-            result.push((position = position + i + Math.max(0, directions[i])));
+            ballPos.copyFrom(destPos);
         }
 
         return result;
@@ -158,7 +196,7 @@ export class Board extends Container {
         const path = this.getPath(
             //
             ball,
-            [0, 1, -1, 1, -1, 1, 1, 1]
+            sequence
         );
 
         ball.setPath(path);
@@ -196,7 +234,7 @@ export class Board extends Container {
         pinRad = pinRad * scale;
         ballRad = ballRad * scale;
 
-        console.warn(gapX, gapY);
+        console.log(gapX, gapY);
 
         // // TEMP
         // const dx = gapX;

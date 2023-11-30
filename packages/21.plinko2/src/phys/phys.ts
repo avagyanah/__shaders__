@@ -8,7 +8,8 @@ let ball: b2Body;
 let record = false;
 let offsetX = 0;
 let offsetY = 0;
-let step = PHYS_STEP;
+let step = PHYS_STEP * 1;
+let impulsed = false;
 
 window['path'] = [];
 
@@ -27,14 +28,14 @@ export class Phys {
         offsetX = padX;
 
         /* path1 */
-        record = true;
-        // ball.ApplyLinearImpulseToCenter({ x: 1, y: 0 });
+        // record = true;
+        ball.ApplyLinearImpulseToCenter({ x: 0.925, y: 0 });
 
         // step = 0;
     }
 
     public static setup(gr: Graphics): void {
-        Phys.world = b2World.Create({ x: 0.0, y: -10.0 });
+        Phys.world = b2World.Create({ x: 0.0, y: -9.8 });
         Phys.stepConfig = { positionIterations: 10, velocityIterations: 10 };
 
         Phys.draw = new Box2dDraw();
@@ -49,73 +50,87 @@ export class Phys {
 
             switch (pinData.id) {
                 case 4:
-                    record = false;
-                    // record = true;
+                    if (!impulsed) {
+                        impulsed = true;
+                        record = true;
 
-                    /* path0 */
-                    Phys.record(ball);
-                    step = 0;
+                        // CENTER => CENTER
+                        {
+                            /* c => c, rest: 0.5  (p_cc1) */
+                            // ball.ApplyLinearImpulseToCenter({ x: 8.72, y: -4 });
+                            //
+                            /* c => c, rest: 0.5  (p_cc2)*/
+                            // ball.ApplyLinearImpulseToCenter({ x: 0.98, y: 2 });
+                        }
 
-                    /* path1 */
-                    // record = false;
-                    // Phys.record(ball);
-                    // step = 0;
+                        // CENTER => RIGHT
+                        {
+                            /* c => r, rest: 0.5  (p_cr1) */
+                            // ball.ApplyLinearImpulseToCenter({ x: 2.956, y: -1 });
+                            //
+                            /* c => l, rest: 0.4  (p_cr2) */
+                            // ball.ApplyLinearImpulseToCenter({ x: 3, y: 2 });
+                        }
 
-                    /* path2 */
-                    // record = true;
+                        // CENTER => LEFT
+                        {
+                            /* c => l, rest: 0.4  (p_cl1) */
+                            // ball.ApplyLinearImpulseToCenter({ x: 3, y: 2 });
+                            // setTimeout(() => {
+                            //     setInterval(() => {
+                            //         ball.ApplyLinearImpulseToCenter({ x: -0.106, y: 0 });
+                            //     });
+                            // }, 200);
+                            //
+                            /* c => l, rest: 0.6  (p_cl2) */
+                            // ball.ApplyLinearImpulseToCenter({ x: 3, y: 2 });
+                            // setTimeout(() => {
+                            //     setInterval(() => {
+                            //         ball.ApplyLinearImpulseToCenter({ x: -0.11, y: 0 });
+                            //     });
+                            // }, 200);
+                        }
 
-                    /* center */
-                    // ball.ApplyLinearImpulseToCenter({ x: 8.6, y: -4 });
-                    /* right */
-                    // ball.ApplyLinearImpulseToCenter({ x: 11, y: 0.6 });
-                    /* left */
-                    // ball.ApplyLinearImpulseToCenter({ x: 3, y: 0 });
-                    // ball.GetFixtureList().SetRestitution(0.2);
+                        // RIGHT => CENTER
+                        {
+                            /* r => c, rest: 0.4  (p_rc1) */
+                            // ball.ApplyLinearImpulseToCenter({ x: 1.745, y: -21 });
+                            //
+                            /* r => c, rest: 0.5  (p_rc2)*/
+                            // ball.ApplyLinearImpulseToCenter({ x: 0, y: -10.6 });
+                            //
+                            /* r => c, rest: 0.6  (p_rc3)*/
+                            // ball.ApplyLinearImpulseToCenter({ x: 6.02, y: -4 });
+                        }
 
-                    /* path3 */
-                    // record = true;
+                        // RIGHT => RIGHT
+                        {
+                            /* r => r, rest: 0.4  (p_rr1)*/
+                            // ball.ApplyLinearImpulseToCenter({ x: 6, y: -7.2 });
+                            //
+                            /* r => r, rest: 0.6  (p_rr2)*/
+                            // ball.ApplyLinearImpulseToCenter({ x: 8, y: -3.1 });
+                        }
 
-                    /* center */
-                    // ball.ApplyLinearImpulseToCenter({ x: 0.57, y: -0 });
-                    /* right */
-                    // ball.ApplyLinearImpulseToCenter({ x: 10, y: -4 });
-                    /* left */
-                    // ball.ApplyLinearImpulseToCenter({ x: 0.1, y: -0 });
-
-                    /* path4 */
-                    // record = true;
-
-                    // ball.ApplyLinearImpulseToCenter({ x: 14.8, y: -3 });
-
-                    /* path5 */
-                    // record = true;
-
-                    // ball.ApplyLinearImpulseToCenter({ x: 16.6, y: 0 });
-
-                    /* path6 */
-                    // record = true;
-
-                    // ball.ApplyLinearImpulseToCenter({ x: 30, y: 0 });
-
+                        // RIGHT => LEFT
+                        {
+                            /* r => l, rest: 0.6  (p_rl1)*/
+                            // ball.ApplyLinearImpulseToCenter({ x: 4, y: -6.47 });
+                            //
+                            /* r => l, rest: 0.6  (p_rl2)*/
+                            // ball.ApplyLinearImpulseToCenter({ x: 5, y: -6.84 });
+                        }
+                    }
                     break;
 
-                // case 9:
-                //     Phys.record(ball);
+                case 8:
+                    Phys.record(ball);
+                    record = false;
+                    step = 0;
 
-                //     break;
-                // case 8:
-                //     // step = 0;
-                //     record = true;
-                //     // Phys.record(ball);
+                    console.warn(window['path'][window['path'].length - 3]);
 
-                //     break;
-
-                // case 13:
-                //     step = 0;
-                //     record = false;
-                //     Phys.record(ball);
-
-                //     break;
+                    break;
             }
         };
 

@@ -97,9 +97,8 @@ export class Ball {
 
         const fixtureDef: b2FixtureDef = {
             shape: new b2CircleShape(this._radius / PHYS_SCALE),
-            // shape: new b2CircleShape(0.01),
             density: 1.0,
-            restitution: 0.3,
+            restitution: 0.6,
         };
 
         const body = Phys.world.CreateBody(bodyDef);

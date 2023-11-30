@@ -100,7 +100,7 @@ class App extends PixiApp {
                     this._board.addChild(gr);
                     Phys.onBallAdded(
                         this._board.balls[0].body,
-                        this._board.padTop + this._board.gapY * 1 - this._board.ballRad * 2,
+                        this._board.padTop + this._board.gapY * 2 - this._board.ballRad * 2,
                         this._board.gapX * 0
                     );
 
