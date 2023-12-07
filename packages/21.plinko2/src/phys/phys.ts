@@ -32,8 +32,6 @@ export class Phys {
         // record = true;
         // ball.ApplyLinearImpulseToCenter({ x: 0.925, y: 0 });
         // ball.GetFixtureList().SetRestitution(0.6);
-
-        // step = 0;
     }
 
     public static setup(gr: Graphics): void {
@@ -78,9 +76,6 @@ export class Phys {
                                 /* rest: 0.5  (p_cc1) */
                                 // ball.ApplyLinearImpulseToCenter({ x: 1.8, y: 0.3 });
                                 //
-                                /* rest: 0.5  (p_cc2) */
-                                // ball.ApplyLinearImpulseToCenter({ x: 0.995, y: 0.7 });
-                                //
                                 /* rest: 0.4  (p_cc2) */
                                 // ball.ApplyLinearImpulseToCenter({ x: 9.02, y: -0.4 });
                             }
@@ -88,7 +83,12 @@ export class Phys {
                             /* C => I */
                             {
                                 /* rest: 0.5  (p_ci1) */
-                                // ball.ApplyLinearImpulseToCenter({ x: 5.93, y: -1.5 });
+                                // ball.ApplyLinearImpulseToCenter({ x: 6.5, y: 1.5 });
+                                // setTimeout(() => {
+                                //     setInterval(() => {
+                                //         ball.ApplyForceToCenter({ x: -1.38, y: 0 });
+                                //     });
+                                // }, 320);
                                 //
                                 /* rest: 0.4  (p_ci2) */
                                 // ball.ApplyLinearImpulseToCenter({ x: 1, y: 0 });
@@ -99,41 +99,36 @@ export class Phys {
                                 // }, 400);
                             }
 
-                            //
-                            //
-                            //
-                            //
-                            //
-                            //
-                            // CC
-                            /* rest: 0.5  (p_cc) */
+                            /* C => O */
                             {
-                                // ball.ApplyLinearImpulseToCenter({ x: 5.93, y: -1.5 });
+                                /* rest: 0.5  (p_co1) */
+                                // ball.ApplyLinearImpulseToCenter({ x: 2.558, y: 0 });
+                                //
+                                /* rest: 0.4  (p_co2) */
+                                // ball.ApplyLinearImpulseToCenter({ x: 11.19, y: -1 });
+                                //
+                                /* rest: 0.4  (p_co3) */
+                                // ball.ApplyLinearImpulseToCenter({ x: 6.16, y: 0 });
                             }
-
-                            // CO
-                            /* rest: 0.5  (p_co) */
-                            {
-                                // ball.ApplyLinearImpulseToCenter({ x: 2.795, y: -1.7 });
-                            }
-
-                            // CI
-                            /* rest: 0.5  (p_ci) */
-                            // {
-                            //     ball.ApplyLinearImpulseToCenter({ x: 7, y: -2 });
-                            //     setTimeout(() => {
-                            //         ball.ApplyLinearImpulseToCenter({ x: -0.79, y: 0 });
-                            //     }, 180);
-                            // }
 
                             // OC
                             {
-                                /* rest: 0.5  (p_oc) */
-                                // ball.ApplyLinearImpulseToCenter({ x: 0, y: -2.405 });
+                                /* rest: 0.4  (p_oc1) */
+                                // ball.ApplyLinearImpulseToCenter({ x: -3.29, y: 0 });
+                                //
+                                /* rest: 0.4  (p_oc2) */
+                                // ball.ApplyLinearImpulseToCenter({ x: -6.08, y: -1 });
+                                //
+                                /* rest: 0.4  (p_oc3) */
+                                ball.GetFixtureList().SetRestitution(0.3);
+                                ball.ApplyLinearImpulseToCenter({ x: 0, y: -6.32 });
                             }
 
                             // OO
                             {
+                                // TEST this
+                                // ball.ApplyLinearImpulseToCenter({ x: -17.45, y: 1 });
+                                //
                                 /* rest: 0.5  (p_oo) */
                                 // ball.ApplyLinearImpulseToCenter({ x: 2, y: -4.8 });
                                 // setTimeout(() => {

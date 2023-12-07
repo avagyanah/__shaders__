@@ -122,8 +122,8 @@ export class Board extends Container {
         return [
             //
             { id: 0, path: 'p_0' },
-            { id: 2, path: 'p_cc1' },
-            // { id: 4, path: 'p_co' },
+            { id: 2, path: 'p_ci1' },
+            { id: 4, path: 'p_oc2' },
             // { id: 8, path: 'p_oo' },
         ];
 
@@ -215,8 +215,8 @@ export class Board extends Container {
         const ball = new Ball(uniqueID('ball'), new Point(0, padTop - gapY), scale, ballRad);
         // const ball = new Ball(this._balls.length, new Point(0, 0), scale, ballRad);
         const transform = new b2Transform();
-        // transform.SetPositionXY(23.79 / PHYS_SCALE, -(padTop + gapY - ballRad) / PHYS_SCALE);
-        transform.SetPositionXY(0 / PHYS_SCALE, -(padTop + gapY - ballRad) / PHYS_SCALE);
+        transform.SetPositionXY(23.79 / PHYS_SCALE, -(padTop + gapY - ballRad) / PHYS_SCALE);
+        // transform.SetPositionXY(0 / PHYS_SCALE, -(padTop + gapY - ballRad) / PHYS_SCALE);
         ball.body.SetTransform(transform);
 
         this._balls.push(ball);
