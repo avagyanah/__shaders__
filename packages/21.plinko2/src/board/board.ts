@@ -122,7 +122,7 @@ export class Board extends Container {
         return [
             //
             { id: 0, path: 'p_0' },
-            { id: 1, path: 'p_ci2' },
+            { id: 2, path: 'p_cc1' },
             // { id: 4, path: 'p_co' },
             // { id: 8, path: 'p_oo' },
         ];

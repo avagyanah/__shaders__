@@ -50,16 +50,18 @@ export class Phys {
             const pinFixture = e.GetFixtureA();
             const pinData = pinFixture.GetUserData();
 
-            switch (pinData.id) {
-                case 4:
-                    this.recordCollision({ row: { '1': -1, '-1': -1 }, col: { '1': -1, '-1': -0 } });
-                    break;
-                case 5:
-                    this.recordCollision({ row: { '1': -1, '-1': -1 }, col: { '1': 0, '-1': -1 } });
-                    break;
-                case 8:
-                    this.recordCollision({ row: { '1': 0, '-1': 0 }, col: { '1': 0, '-1': 0 } });
-                    break;
+            if (impulsed) {
+                switch (pinData.id) {
+                    case 4:
+                        this.recordCollision({ row: { '1': -1, '-1': -1 }, col: { '1': -1, '-1': -0 } });
+                        break;
+                    case 5:
+                        this.recordCollision({ row: { '1': -1, '-1': -1 }, col: { '1': 0, '-1': -1 } });
+                        break;
+                    case 8:
+                        this.recordCollision({ row: { '1': 0, '-1': 0 }, col: { '1': 0, '-1': 0 } });
+                        break;
+                }
             }
 
             switch (pinData.id) {
@@ -71,17 +73,30 @@ export class Phys {
 
                         // CENTER
                         {
-                            /* CENTER => IN */
+                            /* C => C */
+                            {
+                                /* rest: 0.5  (p_cc1) */
+                                // ball.ApplyLinearImpulseToCenter({ x: 1.8, y: 0.3 });
+                                //
+                                /* rest: 0.5  (p_cc2) */
+                                // ball.ApplyLinearImpulseToCenter({ x: 0.995, y: 0.7 });
+                                //
+                                /* rest: 0.4  (p_cc2) */
+                                // ball.ApplyLinearImpulseToCenter({ x: 9.02, y: -0.4 });
+                            }
+
+                            /* C => I */
                             {
                                 /* rest: 0.5  (p_ci1) */
                                 // ball.ApplyLinearImpulseToCenter({ x: 5.93, y: -1.5 });
-
+                                //
                                 /* rest: 0.4  (p_ci2) */
-                                ball.ApplyLinearImpulseToCenter({ x: 1, y: 0 });
-
-                                setTimeout(() => {
-                                    ball.ApplyForceToCenter({ x: -53.8, y: 0 });
-                                }, 470);
+                                // ball.ApplyLinearImpulseToCenter({ x: 1, y: 0 });
+                                // setTimeout(() => {
+                                //     setInterval(() => {
+                                //         ball.ApplyForceToCenter({ x: -1.3, y: 0 });
+                                //     });
+                                // }, 400);
                             }
 
                             //
