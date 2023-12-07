@@ -27,12 +27,24 @@ let scaleTop = 1;
 const DX = 190.3;
 const DY = 167.15;
 
+const uniqueID = ((): ((prefix?: string) => string) => {
+    let count = 0;
+
+    return (prefix = '') => `${prefix}${++count}`;
+})();
+
 const sequences: Direction[][] = [
     //
     [1, -1, -1, 1, 1, -1, -1, 1],
     [1, 1, -1, -1, -1, 1, 1, -1],
     [-1, 1, 1, 1, -1, -1, 1, -1],
     [1, 1, -1, -1, 1, -1, 1, 1],
+    [1, 1, 1, -1, -1, 1, 1, 1],
+    [-1, -1, -1, 1, 1, -1, -1, 1],
+    [1, 1, -1, -1, 1, 1, 1, 1],
+    [-1, -1, 1, 1, -1, -1, -1, -1],
+    [1, 1, 1, -1, 1, 1, 1, 1],
+    [-1, -1, -1, 1, -1, -1, -1, -1],
 ];
 // const sequence: Direction[] = [1, -1, -1, 1, 1, -1, -1, 1];
 // const sequence: Direction[] = [1, -1, -1, 1, 1, -1, -1, 1, 1, 1, -1, -1];
@@ -67,6 +79,7 @@ export class Board extends Container {
         this._view = this._createView();
 
         ballEmitter.on('collision', this._onBallCollision, this);
+        ballEmitter.on('complete', this._onBallComplete, this);
     }
 
     public get gapY(): number {
@@ -199,7 +212,7 @@ export class Board extends Container {
     };
 
     public async addBall(): Promise<void> {
-        const ball = new Ball(this._balls.length, new Point(0, padTop - gapY), scale, ballRad);
+        const ball = new Ball(uniqueID('ball'), new Point(0, padTop - gapY), scale, ballRad);
         // const ball = new Ball(this._balls.length, new Point(0, 0), scale, ballRad);
         const transform = new b2Transform();
         transform.SetPositionXY(23.79 / PHYS_SCALE, -(padTop + gapY - ballRad) / PHYS_SCALE);
@@ -230,6 +243,12 @@ export class Board extends Container {
 
         const pin = this._getPin(pinID, row, col);
         pin.onCollide();
+    }
+
+    private _onBallComplete(id: string): void {
+        const ball = this._balls.find((ball) => ball.id === id);
+        this._balls.splice(this._balls.indexOf(ball), 1);
+        ball.destroy();
     }
 
     private _getPin(fromPin: PinID, row: number, col: number): Pin {

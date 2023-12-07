@@ -96,6 +96,7 @@ class App extends PixiApp {
         // setInterval(() => {
         //     this._board.addBall();
         // }, 0);
+
         document.onkeyup = (ev) => {
             switch (ev.key) {
                 case 'd':

@@ -4,13 +4,16 @@ import { assets } from '../assets';
 import { PHYS_SCALE, alpha } from '../constants';
 import { Phys } from '../phys/phys';
 
-export const ballEmitter = new utils.EventEmitter<{ collision: (id: number, event: CollisionEntry) => void }>();
+export const ballEmitter = new utils.EventEmitter<{
+    collision: (id: number, event: CollisionEntry) => void;
+    complete: (id: number) => void;
+}>();
 
 export class Ball {
     public readonly body: b2Body;
     public readonly view: Container;
 
-    private readonly _id: number;
+    private readonly _id: string;
     private readonly _scale: number;
     private readonly _radius: number;
     private readonly _position: IPoint;
@@ -22,7 +25,7 @@ export class Ball {
     private _pins: PinID[];
     private _paths: Path[];
 
-    public constructor(id: number, position: IPoint, scale: number, radius: number) {
+    public constructor(id: string, position: IPoint, scale: number, radius: number) {
         this._id = id;
         this._scale = scale;
         this._radius = radius;
@@ -30,6 +33,10 @@ export class Ball {
 
         this.view = this._createView();
         this.body = this._createBody();
+    }
+
+    public get id(): string {
+        return this._id;
     }
 
     public destroy(): void {
@@ -94,6 +101,7 @@ export class Ball {
     }
 
     private _emitPathComplete(): void {
+        ballEmitter.emit('complete', this._id);
         this.update = this.emptyUpdate;
     }
 
