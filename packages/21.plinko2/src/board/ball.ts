@@ -1,8 +1,10 @@
 import { b2BodyType, b2CircleShape, type b2Body, type b2BodyDef, type b2FixtureDef } from '@box2d/core';
-import { Container, Sprite } from 'pixi.js';
+import { Container, Sprite, utils } from 'pixi.js';
 import { assets } from '../assets';
 import { PHYS_SCALE, alpha } from '../constants';
 import { Phys } from '../phys/phys';
+
+export const ballEmitter = new utils.EventEmitter<{ collision: (id: number, event: CollisionEntry) => void }>();
 
 export class Ball {
     public readonly body: b2Body;
@@ -13,7 +15,12 @@ export class Ball {
     private readonly _radius: number;
     private readonly _position: IPoint;
 
-    private _path: Path;
+    private _path: [PinID, Path][];
+    private _currentPath: Path;
+    private _currentPin: PinID;
+
+    private _pins: PinID[];
+    private _paths: Path[];
 
     public constructor(id: number, position: IPoint, scale: number, radius: number) {
         this._id = id;
@@ -30,18 +37,36 @@ export class Ball {
         Phys.world.DestroyBody(this.body);
     }
 
-    public update(): void {
-        // this.sync();
-        // return;
+    public update = (): void => {
+        //
+    };
 
-        if (this._path.length === 0) {
+    public emptyUpdate = (): void => {
+        //
+    };
+
+    public pathUpdate = (): void => {
+        if (this._currentPath.length === 0) {
+            if (this._paths.length === 0) {
+                this._emitPathComplete();
+                return;
+            }
+
+            this._currentPath = this._paths.pop().reverse();
+            this._currentPin = this._pins.pop();
+        }
+
+        const next = this._currentPath.pop();
+
+        if (Array.isArray(next)) {
+            this.view.position.set(next[0], next[1]);
+            // this.view.rotation = next[2];
             return;
         }
 
-        const { 0: x, 1: y } = this._path.shift();
-
-        this.view.position.set(x, y);
-    }
+        this._emitCollision(next);
+        this.pathUpdate();
+    };
 
     public sync(): void {
         const pos = this.body.GetPosition();
@@ -51,8 +76,25 @@ export class Ball {
         this.view.angle = -angle;
     }
 
-    public setPath(path: Path): void {
-        this._path = path;
+    public setPath(path: Record<PinID, Path>): void {
+        const pins = Object.keys(path);
+        const paths = Object.values(path);
+
+        this._pins = pins.map((k) => +k).reverse();
+        this._paths = paths.reverse();
+
+        this._currentPath = this._paths.pop().reverse();
+        this._currentPin = this._pins.pop();
+
+        this.update = this.pathUpdate;
+    }
+
+    private _emitCollision(collisionValue: CollisionEntry): void {
+        ballEmitter.emit('collision', this._id, collisionValue);
+    }
+
+    private _emitPathComplete(): void {
+        this.update = this.emptyUpdate;
     }
 
     private _createView(): Container {

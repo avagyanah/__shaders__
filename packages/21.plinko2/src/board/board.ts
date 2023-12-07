@@ -2,7 +2,7 @@ import { b2Transform, type b2World } from '@box2d/core';
 import { Container, Point, Sprite } from 'pixi.js';
 import { assets } from '../assets';
 import { PHYS_SCALE, alpha } from '../constants';
-import { Ball } from './ball';
+import { Ball, ballEmitter } from './ball';
 import { Box } from './box';
 import { pathPairs, paths } from './paths';
 import { Pin } from './pin';
@@ -27,9 +27,16 @@ let scaleTop = 1;
 const DX = 190.3;
 const DY = 167.15;
 
-const sequence: Direction[] = [1, -1, -1, -1, 1, 1, -1, 1];
-// const sequence: Direction[] = [1, 1, 1, 1, 1, 1, 1, -1];
-// const sequence: Direction[] = [-1, -1, -1, -1, -1, -1, -1];
+const sequences: Direction[][] = [
+    //
+    [1, -1, -1, 1, 1, -1, -1, 1],
+    [1, 1, -1, -1, -1, 1, 1, -1],
+    [-1, 1, 1, 1, -1, -1, 1, -1],
+    [1, 1, -1, -1, 1, -1, 1, 1],
+];
+// const sequence: Direction[] = [1, -1, -1, 1, 1, -1, -1, 1];
+// const sequence: Direction[] = [1, -1, -1, 1, 1, -1, -1, 1, 1, 1, -1, -1];
+// const sequence: Direction[] = [1, -1, -1, 1, 1, -1, -1, 1, 1, 1, -1, -1, 1, 1, -1, -1];
 
 export function _sample<T>(list: T[]): T | undefined {
     return list[Math.floor(Math.random() * list.length)];
@@ -58,6 +65,8 @@ export class Board extends Container {
         this._balls = [];
         this._boxes = [];
         this._view = this._createView();
+
+        ballEmitter.on('collision', this._onBallCollision, this);
     }
 
     public get gapY(): number {
@@ -92,9 +101,18 @@ export class Board extends Container {
         this._balls.forEach((ball) => ball.update());
     }
 
-    public readonly getPinPathPairs = (directions: Direction[]): Array<{ path: string; id: number }> => {
-        const result = [];
+    public readonly getPinPathPairs = (directions: Direction[]): Array<{ id: number; path: string }> => {
+        const result: Array<{ id: number; path: string }> = [];
+
         const pinIDs = this.getPinIndexes(directions);
+
+        // return [
+        //     //
+        //     { id: 0, path: 'p_0' },
+        //     { id: 2, path: 'p_cc' },
+        //     { id: 4, path: 'p_co' },
+        //     // { id: 8, path: 'p_oo' },
+        // ];
 
         // first pin
         result.push({ id: pinIDs[0], path: 'p_0' });
@@ -107,15 +125,14 @@ export class Board extends Container {
 
             const last = _last(result);
             const pinID = pinIDs[i + 1];
-            const propName = this._pins[pinID].type;
-            console.warn(propName);
+            const propName = this._pins[pinID].posType;
 
             const pathID = _sample(pathPairs[last.path][propName][dir]) as string;
             result.push({ id: pinID, path: pathID });
         }
 
         // result box
-        result.push({ id: _last(pinIDs) - this._pins.length, path: 'p_cc' });
+        // result.push({ id: _last(pinIDs) - this._pins.length, path: 'p_cc' });
 
         return result;
     };
@@ -132,20 +149,8 @@ export class Board extends Container {
         return result;
     };
 
-    public readonly getBoxIndex = (directions: Direction[]): number[] => {
-        let position = 0;
-        const result = [position];
-
-        for (let i = 0; i < directions.length; i++) {
-            position = position + (i + 1) + Math.max(0, directions[i]);
-            result.push(position);
-        }
-
-        return result;
-    };
-
-    public readonly getPath = (source: Ball, directions: Direction[]): Path => {
-        const result: Path = [];
+    public readonly getPath = (source: Ball, directions: Direction[]): Record<PinID, Path> => {
+        const result: Record<PinID, Path> = {};
         const pairPinPath = this.getPinPathPairs(directions);
 
         const ballPos = source.view.position.clone();
@@ -153,23 +158,38 @@ export class Board extends Container {
         for (let i = 0; i < pairPinPath.length; i++) {
             const { path: pathID, id: pinID } = pairPinPath[i];
 
-            const dest = i === pairPinPath.length - 1 ? this._boxes[pinID] : this._pins[pinID];
+            // const dest = i === pairPinPath.length - 1 ? this._boxes[pinID] : this._pins[pinID];
 
+            const dest = this._pins[pinID];
             const destPos = dest.view.position;
 
             const dirX = Math.sign(destPos.x - ballPos.x);
+            // const dirX = i === 0 ? 0 : directions[i];
+
             const path = paths[pathID];
             const { points } = path;
 
             const dx = gapX / DX;
             const dy = gapY / DY;
 
-            for (let i = 0; i < points.length; i += 3) {
-                const x = dirX * points[i + 0] * dx + ballPos.x;
-                const y = points[i + 1] * dy + ballPos.y - (ballRad + ballRad);
-                const r = 0;
+            result[pinID] = [];
 
-                result.push([x, y, r]);
+            for (let p = 0; p < points.length; p++) {
+                const point = points[p];
+
+                if (Array.isArray(point)) {
+                    const { 0: xo, 1: yo, 2: ro } = points[p];
+
+                    const x = dirX * xo * dx + ballPos.x;
+                    const y = yo * dy + ballPos.y - (ballRad + ballRad);
+                    const r = dirX * ro;
+
+                    result[pinID].push([x, y, r]);
+                } else {
+                    const { row, col } = points[p];
+
+                    result[pinID].push({ pinID, row: row[dirX], col: col[dirX] });
+                }
             }
 
             ballPos.copyFrom(destPos);
@@ -182,14 +202,14 @@ export class Board extends Container {
         const ball = new Ball(this._balls.length, new Point(0, padTop - gapY), scale, ballRad);
         // const ball = new Ball(this._balls.length, new Point(0, 0), scale, ballRad);
         const transform = new b2Transform();
-        transform.SetPositionXY(23.79 / PHYS_SCALE, -(padTop + gapY - ballRad * 2) / PHYS_SCALE);
+        transform.SetPositionXY(23.79 / PHYS_SCALE, -(padTop + gapY - ballRad) / PHYS_SCALE);
+        // transform.SetPositionXY(0 / PHYS_SCALE, -(padTop + gapY) / PHYS_SCALE);
         ball.body.SetTransform(transform);
 
         this._balls.push(ball);
         this.addChild(ball.view);
 
-        const path = this.getPath(ball, sequence);
-
+        const path = this.getPath(ball, _sample(sequences));
         ball.setPath(path);
     }
 
@@ -203,6 +223,24 @@ export class Board extends Container {
 
         this._createPins();
         this._createBoxes();
+    }
+
+    private _onBallCollision(id: number, event: CollisionEntry): void {
+        const { pinID, row, col } = event;
+
+        const pin = this._getPin(pinID, row, col);
+        pin.onCollide();
+    }
+
+    private _getPin(fromPin: PinID, row: number, col: number): Pin {
+        const { row: fromRow, col: fromCol } = this._pins[fromPin];
+
+        const toRow = fromRow + row;
+        const toCol = fromCol + col;
+
+        const pin = this._pins.find((pin) => pin.row === toRow && pin.col === toCol);
+
+        return pin;
     }
 
     private _calculateScale(rows: number): void {
@@ -226,19 +264,6 @@ export class Board extends Container {
         ballRad = ballRad * scale;
 
         console.log(gapX, gapY);
-
-        // // // TEMP
-        // const dx = gapX;
-        // const dy = gapY;
-
-        // window['dx'] = dx;
-        // window['dy'] = dy;
-
-        // const gr = new Graphics();
-        // gr.beginFill(0xff0000);
-        // gr.drawRect(-100, padTop + pinRad, 200, dy);
-        // gr.endFill();
-        // this.addChild(gr);
     }
 
     private _createView(): BoardView {
@@ -264,12 +289,12 @@ export class Board extends Container {
     private _createPins(): void {
         for (let i = 0; i < this._rows; i++) {
             for (let j = 0; j <= i; j++) {
-                const type: PinType = i === this._rows - 1 ? 'bottom' : j === 0 || j === i ? 'side' : 'common';
+                const type: PinPositionType = i === this._rows - 1 ? 'bottom' : j === 0 || j === i ? 'side' : 'common';
 
                 const x = (j - i / 2) * gapX;
                 const y = i * gapY + padTop;
 
-                const pin = new Pin(this._pins.length, new Point(x, y), scale, pinRad, type);
+                const pin = new Pin(this._pins.length, new Point(x, y), scale, pinRad, type, i, j);
 
                 this._pins.push(pin);
                 this.addChild(pin.view);

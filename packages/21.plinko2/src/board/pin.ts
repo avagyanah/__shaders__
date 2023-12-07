@@ -10,24 +10,44 @@ export class Pin {
     public readonly view: Container;
 
     private readonly _id: number;
+    private readonly _row: number;
+    private readonly _col: number;
     private readonly _scale: number;
     private readonly _radius: number;
-    private readonly _type: PinType;
     private readonly _position: IPoint;
+    private readonly _posType: PinPositionType;
 
-    public constructor(id: number, position: IPoint, scale: number, radius: number, type: PinType) {
+    public constructor(
+        id: number,
+        position: IPoint,
+        scale: number,
+        radius: number,
+        type: PinPositionType,
+        row: number,
+        col: number
+    ) {
         this._id = id;
+        this._row = row;
+        this._col = col;
         this._scale = scale;
         this._radius = radius;
-        this._type = type;
+        this._posType = type;
         this._position = position;
 
         this.view = this._createView();
         this.body = this._createBody();
     }
 
-    public get type(): PinType {
-        return this._type;
+    public get posType(): PinPositionType {
+        return this._posType;
+    }
+
+    public get row(): number {
+        return this._row;
+    }
+
+    public get col(): number {
+        return this._col;
     }
 
     public destroy(): void {
@@ -35,22 +55,29 @@ export class Pin {
         Phys.world.DestroyBody(this.body);
     }
 
+    public onCollide(): void {
+        (this.view.children[0] as Sprite).tint = 0xff0000;
+        setTimeout(() => {
+            (this.view.children[0] as Sprite).tint = 0xffffff;
+        }, 70);
+    }
+
     private _createView(): Container {
         const { _scale: scale, _position: pos } = this;
 
-        const sprite = Sprite.from(assets.images.pin);
-        sprite.anchor.set(0.5);
+        // const sprite = Sprite.from(assets.images.pin);
+        // sprite.anchor.set(0.5);
 
         const diameter = this._radius * 2;
 
-        // const sprite = Sprite.from(assets.images.ball);
-        // sprite.anchor.set(0.5);
-        // sprite.tint = 0xffffff;
-        // sprite.width = diameter;
-        // sprite.height = diameter;
+        const sprite = Sprite.from(assets.images.ball);
+        sprite.anchor.set(0.5);
+        sprite.tint = 0xffffff;
+        sprite.width = diameter;
+        sprite.height = diameter;
 
         const view = new Container();
-        view.scale.set(scale);
+        // view.scale.set(scale);
         view.position.set(pos.x, pos.y);
         view.addChild(sprite);
 

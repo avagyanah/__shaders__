@@ -1,14 +1,15 @@
 import type { b2Body, b2Contact, b2StepConfig } from '@box2d/core';
 import { b2ContactListener, b2World } from '@box2d/core';
 import { type Graphics } from 'pixi.js';
-import { PHYS_SCALE, PHYS_STEP } from '../constants';
+import { PHYS_SCALE } from '../constants';
 import { Box2dDraw } from './testbed';
 
 let ball: b2Body;
 let record = false;
 let offsetX = 0;
 let offsetY = 0;
-let step = PHYS_STEP * 1;
+// let step = PHYS_STEP * 1;
+let step = 1 / 14;
 let impulsed = false;
 
 window['path'] = [];
@@ -51,66 +52,81 @@ export class Phys {
 
             switch (pinData.id) {
                 case 4:
-                    if (!impulsed) {
-                        Phys.world.Step(step, { positionIterations: 1, velocityIterations: 0 });
+                    // this.recordCollision({ row: { '1': -1, '-1': -1 }, col: { '1': -1, '-1': -0 } });
+                    break;
+                case 5:
+                    this.recordCollision({ row: { '1': -1, '-1': -1 }, col: { '1': 0, '-1': -1 } });
+                    break;
+                case 8:
+                    this.recordCollision({ row: { '1': 0, '-1': 0 }, col: { '1': 0, '-1': 0 } });
+                    break;
+            }
 
+            switch (pinData.id) {
+                case 4:
+                    if (!impulsed) {
                         impulsed = true;
                         record = true;
+                        Phys.world.Step(0, { positionIterations: 1, velocityIterations: 0 });
 
-                        // CENTER => CENTER
+                        // CENTER
                         {
+                            // CC
                             /* rest: 0.5  (p_cc) */
-                            // {
-                            //     ball.ApplyLinearImpulseToCenter({ x: 7.34, y: -3 });
-                            // }
-                        }
+                            {
+                                // ball.ApplyLinearImpulseToCenter({ x: 8.81, y: -1.5 });
+                            }
 
-                        // CENTER => OUT
-                        {
+                            // CO
                             /* rest: 0.5  (p_co) */
-                            // {
-                            //     ball.ApplyLinearImpulseToCenter({ x: 2.788, y: -1 });
-                            // }
-                        }
+                            {
+                                // ball.ApplyLinearImpulseToCenter({ x: 2.795, y: -1.7 });
+                            }
 
-                        // CENTER => IN
-                        {
+                            // CI
                             /* rest: 0.5  (p_ci) */
                             // {
-                            //     ball.ApplyLinearImpulseToCenter({ x: 6, y: -3 });
+                            //     ball.ApplyLinearImpulseToCenter({ x: 7, y: -2 });
                             //     setTimeout(() => {
-                            //         ball.ApplyLinearImpulseToCenter({ x: -0.8, y: 0 });
+                            //         ball.ApplyLinearImpulseToCenter({ x: -0.79, y: 0 });
                             //     }, 180);
                             // }
-                        }
 
-                        // OUT => CENTER
-                        {
-                            /* rest: 0.5  (p_oc) */
-                            // ball.ApplyLinearImpulseToCenter({ x: -3.47, y: -2.5 });
-                        }
+                            // OC
+                            {
+                                /* rest: 0.5  (p_oc) */
+                                // ball.ApplyLinearImpulseToCenter({ x: 0, y: -2.405 });
+                            }
 
-                        // OUT => OUT
-                        {
-                            /* rest: 0.5  (p_oo) */
-                            // ball.ApplyLinearImpulseToCenter({ x: -5.155, y: -3 });
-                        }
+                            // OO
+                            {
+                                /* rest: 0.5  (p_oo) */
+                                ball.ApplyLinearImpulseToCenter({ x: 2, y: -4.8 });
+                                setTimeout(() => {
+                                    ball.ApplyLinearImpulseToCenter({ x: 2.16, y: 0 });
+                                }, 710);
+                            }
 
-                        // OUT => IN
-                        {
-                            /* rest: 0.5  (p_oi) */
-                            // ball.ApplyLinearImpulseToCenter({ x: -1.96, y: -2 });
+                            // OI
+                            {
+                                /* rest: 0.5  (p_oi) */
+                                // ball.ApplyLinearImpulseToCenter({ x: 1.18, y: -2 });
+                            }
                         }
                     }
                     break;
 
-                case 8:
-                    record = false;
-                    Phys.world.Step(step, { positionIterations: 1, velocityIterations: 0 });
-                    Phys.record(ball);
-                    step = 0;
+                case 5:
+                    Phys.world.Step(0, { positionIterations: 1, velocityIterations: 0 });
+                    break;
 
-                    console.warn(window['path'][window['path'].length - 3]);
+                case 8:
+                    Phys.world.Step(0, { positionIterations: 1, velocityIterations: 0 });
+                    record = false;
+                    step = 0;
+                    Phys.recordTransform(ball);
+
+                    console.warn(window['path'][window['path'].length - 1][0]);
 
                     break;
             }
@@ -121,17 +137,14 @@ export class Phys {
 
     public static update(): void {
         if (record) {
-            Phys.record(ball);
+            Phys.recordTransform(ball);
         }
 
-        Phys.world.Step(step, Phys.stepConfig);
-        Phys.world.Step(step, Phys.stepConfig);
-        Phys.world.Step(step, Phys.stepConfig);
         Phys.world.Step(step, Phys.stepConfig);
         Phys.draw.Update(Phys.world);
     }
 
-    public static record(ball: b2Body): void {
+    public static recordTransform(ball: b2Body): void {
         const pos = ball.GetPosition();
         const angle = ball.GetAngle();
 
@@ -139,6 +152,13 @@ export class Phys {
         const y = -(pos.y * PHYS_SCALE + offsetY).toFixed(1);
         const r = -angle.toFixed(1);
 
-        window['path'].push(x, y, r);
+        window['path'].push([x, y, r]);
+    }
+
+    public static recordCollision(value: {
+        row: { '1': number; '-1': number };
+        col: { '1': number; '-1': number };
+    }): void {
+        window['path'].push(value);
     }
 }
