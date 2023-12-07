@@ -5,8 +5,8 @@ import { PHYS_SCALE, alpha } from '../constants';
 import { Phys } from '../phys/phys';
 
 export const ballEmitter = new utils.EventEmitter<{
-    collision: (id: number, event: CollisionEntry) => void;
-    complete: (id: number) => void;
+    collision: (id: string, event: CollisionEntry) => void;
+    complete: (id: string) => void;
 }>();
 
 export class Ball {
@@ -148,7 +148,7 @@ export class Ball {
         const fixtureDef: b2FixtureDef = {
             shape: new b2CircleShape(this._radius / PHYS_SCALE),
             density: 1.0,
-            restitution: 0.5,
+            restitution: 0.4,
         };
 
         const body = Phys.world.CreateBody(bodyDef);

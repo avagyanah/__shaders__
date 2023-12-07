@@ -52,7 +52,7 @@ export class Phys {
 
             switch (pinData.id) {
                 case 4:
-                    // this.recordCollision({ row: { '1': -1, '-1': -1 }, col: { '1': -1, '-1': -0 } });
+                    this.recordCollision({ row: { '1': -1, '-1': -1 }, col: { '1': -1, '-1': -0 } });
                     break;
                 case 5:
                     this.recordCollision({ row: { '1': -1, '-1': -1 }, col: { '1': 0, '-1': -1 } });
@@ -71,10 +71,29 @@ export class Phys {
 
                         // CENTER
                         {
+                            /* CENTER => IN */
+                            {
+                                /* rest: 0.5  (p_ci1) */
+                                // ball.ApplyLinearImpulseToCenter({ x: 5.93, y: -1.5 });
+
+                                /* rest: 0.4  (p_ci2) */
+                                ball.ApplyLinearImpulseToCenter({ x: 1, y: 0 });
+
+                                setTimeout(() => {
+                                    ball.ApplyForceToCenter({ x: -53.8, y: 0 });
+                                }, 470);
+                            }
+
+                            //
+                            //
+                            //
+                            //
+                            //
+                            //
                             // CC
                             /* rest: 0.5  (p_cc) */
                             {
-                                // ball.ApplyLinearImpulseToCenter({ x: 8.81, y: -1.5 });
+                                // ball.ApplyLinearImpulseToCenter({ x: 5.93, y: -1.5 });
                             }
 
                             // CO
@@ -101,10 +120,10 @@ export class Phys {
                             // OO
                             {
                                 /* rest: 0.5  (p_oo) */
-                                ball.ApplyLinearImpulseToCenter({ x: 2, y: -4.8 });
-                                setTimeout(() => {
-                                    ball.ApplyLinearImpulseToCenter({ x: 2.16, y: 0 });
-                                }, 710);
+                                // ball.ApplyLinearImpulseToCenter({ x: 2, y: -4.8 });
+                                // setTimeout(() => {
+                                //     ball.ApplyLinearImpulseToCenter({ x: 2.16, y: 0 });
+                                // }, 710);
                             }
 
                             // OI

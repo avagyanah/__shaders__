@@ -119,13 +119,13 @@ export class Board extends Container {
 
         const pinIDs = this.getPinIndexes(directions);
 
-        // return [
-        //     //
-        //     { id: 0, path: 'p_0' },
-        //     { id: 2, path: 'p_cc' },
-        //     { id: 4, path: 'p_co' },
-        //     // { id: 8, path: 'p_oo' },
-        // ];
+        return [
+            //
+            { id: 0, path: 'p_0' },
+            { id: 1, path: 'p_ci2' },
+            // { id: 4, path: 'p_co' },
+            // { id: 8, path: 'p_oo' },
+        ];
 
         // first pin
         result.push({ id: pinIDs[0], path: 'p_0' });
@@ -215,8 +215,8 @@ export class Board extends Container {
         const ball = new Ball(uniqueID('ball'), new Point(0, padTop - gapY), scale, ballRad);
         // const ball = new Ball(this._balls.length, new Point(0, 0), scale, ballRad);
         const transform = new b2Transform();
-        transform.SetPositionXY(23.79 / PHYS_SCALE, -(padTop + gapY - ballRad) / PHYS_SCALE);
-        // transform.SetPositionXY(0 / PHYS_SCALE, -(padTop + gapY) / PHYS_SCALE);
+        // transform.SetPositionXY(23.79 / PHYS_SCALE, -(padTop + gapY - ballRad) / PHYS_SCALE);
+        transform.SetPositionXY(0 / PHYS_SCALE, -(padTop + gapY - ballRad) / PHYS_SCALE);
         ball.body.SetTransform(transform);
 
         this._balls.push(ball);
@@ -238,7 +238,7 @@ export class Board extends Container {
         this._createBoxes();
     }
 
-    private _onBallCollision(id: number, event: CollisionEntry): void {
+    private _onBallCollision(id: string, event: CollisionEntry): void {
         const { pinID, row, col } = event;
 
         const pin = this._getPin(pinID, row, col);
@@ -246,9 +246,9 @@ export class Board extends Container {
     }
 
     private _onBallComplete(id: string): void {
-        const ball = this._balls.find((ball) => ball.id === id);
-        this._balls.splice(this._balls.indexOf(ball), 1);
-        ball.destroy();
+        // const ball = this._balls.find((ball) => ball.id === id);
+        // this._balls.splice(this._balls.indexOf(ball), 1);
+        // ball.destroy();
     }
 
     private _getPin(fromPin: PinID, row: number, col: number): Pin {
