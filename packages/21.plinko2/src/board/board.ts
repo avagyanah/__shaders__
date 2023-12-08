@@ -33,23 +33,6 @@ const uniqueID = ((): ((prefix?: string) => string) => {
     return (prefix = '') => `${prefix}${++count}`;
 })();
 
-const sequences: Direction[][] = [
-    //
-    [1, -1, -1, 1, 1, -1, -1, 1],
-    [1, 1, -1, -1, -1, 1, 1, -1],
-    [-1, 1, 1, 1, -1, -1, 1, -1],
-    [1, 1, -1, -1, 1, -1, 1, 1],
-    [1, 1, 1, -1, -1, 1, 1, 1],
-    [-1, -1, -1, 1, 1, -1, -1, 1],
-    [1, 1, -1, -1, 1, 1, 1, 1],
-    [-1, -1, 1, 1, -1, -1, -1, -1],
-    [1, 1, 1, -1, 1, 1, 1, 1],
-    [-1, -1, -1, 1, -1, -1, -1, -1],
-];
-// const sequence: Direction[] = [1, -1, -1, 1, 1, -1, -1, 1];
-// const sequence: Direction[] = [1, -1, -1, 1, 1, -1, -1, 1, 1, 1, -1, -1];
-// const sequence: Direction[] = [1, -1, -1, 1, 1, -1, -1, 1, 1, 1, -1, -1, 1, 1, -1, -1];
-
 export function _sample<T>(list: T[]): T | undefined {
     return list[Math.floor(Math.random() * list.length)];
 }
@@ -181,13 +164,15 @@ export class Board extends Container {
             const destPos = dest.view.position;
 
             const dirX = Math.sign(destPos.x - ballPos.x);
-            // const dirX = i === 0 ? 0 : directions[i];
 
             const path = paths[pathID];
             const { points } = path;
 
-            const dx = gapX / DX;
-            const dy = gapY / DY;
+            const dxx = Math.abs(destPos.x - ballPos.x) * 2;
+            const dyy = Math.abs(destPos.y - ballPos.y);
+
+            const dx = dxx / DX;
+            const dy = dyy / DY;
 
             result[pinID] = [];
 
@@ -215,8 +200,9 @@ export class Board extends Container {
         return result;
     };
 
-    public async addBall(): Promise<void> {
-        const ball = new Ball(uniqueID('ball'), new Point(0, padTop - gapY), scale, ballRad);
+    public async addBall(directions: Direction[]): Promise<void> {
+        const ball = new Ball(uniqueID('ball'), new Point(0, 0), scale, ballRad);
+        // const ball = new Ball(uniqueID('ball'), new Point(0, padTop - gapY), scale, ballRad);
         // const ball = new Ball(this._balls.length, new Point(0, 0), scale, ballRad);
         const transform = new b2Transform();
         transform.SetPositionXY(23.79 / PHYS_SCALE, -(padTop + gapY - ballRad) / PHYS_SCALE);
@@ -226,7 +212,7 @@ export class Board extends Container {
         this._balls.push(ball);
         this.addChild(ball.view);
 
-        const path = this.getPath(ball, _sample(sequences));
+        const path = this.getPath(ball, directions);
         ball.setPath(path);
     }
 

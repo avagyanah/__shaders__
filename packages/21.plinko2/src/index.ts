@@ -2,7 +2,7 @@ import TWEEN from '@tweenjs/tween.js';
 import { Graphics } from 'pixi.js';
 import { PixiApp } from '../../../shared/pixi';
 import { assets } from './assets';
-import { Board } from './board/board';
+import { Board, _sample } from './board/board';
 import { Phys } from './phys/phys';
 
 window.addEventListener('load', async () => {
@@ -27,6 +27,31 @@ class App extends PixiApp {
         /* ______________________________ */
 
         /* _____________ BOARD _____________ */
+
+        const sequences: Record<'8' | '12' | '16', Direction[][]> = {
+            '8': [
+                //
+                [1, -1, -1, 1, 1, -1, -1, 1],
+                [1, 1, -1, -1, -1, 1, 1, -1],
+                [-1, 1, 1, 1, -1, -1, 1, -1],
+                [1, 1, -1, -1, 1, -1, 1, 1],
+                [1, 1, 1, -1, -1, 1, 1, 1],
+                [-1, -1, -1, 1, 1, -1, -1, 1],
+                [1, 1, -1, -1, 1, 1, 1, 1],
+                [-1, -1, 1, 1, -1, -1, -1, -1],
+                [1, 1, 1, -1, 1, 1, 1, 1],
+                [-1, -1, -1, 1, -1, -1, -1, -1],
+            ],
+            '12': [
+                //
+                [1, -1, -1, 1, 1, -1, -1, 1, 1, 1, -1, -1],
+            ],
+            '16': [
+                //
+                [1, -1, -1, 1, 1, -1, -1, 1, 1, 1, -1, -1, 1, 1, -1, -1],
+            ],
+        };
+
         const multipliers: Record<Risk, Record<number, number[]>> = {
             LOW: {
                 8: [6, 2.1, 1.1, 0.93, 0.46, 0.93, 1.1, 2.1, 6],
@@ -68,10 +93,11 @@ class App extends PixiApp {
         Board.setRisk(risk);
         Board.setMultipliers(multipliers[risk]);
 
+        const row = 12;
         this._board = new Board();
         this._board.position.set(width * 0.5, height * 0.04);
 
-        this._board.initRows(8);
+        this._board.initRows(row);
         // this._board.initRows(12);
         // this._board.initRows(16);
 
@@ -101,7 +127,7 @@ class App extends PixiApp {
         document.onkeyup = (ev) => {
             switch (ev.key) {
                 case 'd':
-                    this._board.addBall();
+                    this._board.addBall(_sample(sequences[row]));
                     this._board.addChild(gr);
                     Phys.onBallAdded(
                         this._board.balls[0].body,
