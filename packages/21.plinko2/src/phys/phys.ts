@@ -73,16 +73,16 @@ export class Phys {
                         {
                             /* C => C */
                             {
-                                /* rest: 0.5  (p_cc1) */
+                                /* (p_cc1) rest: 0.5 */
                                 // ball.ApplyLinearImpulseToCenter({ x: 1.8, y: 0.3 });
                                 //
-                                /* rest: 0.4  (p_cc2) */
+                                /* (p_cc2) rest: 0.4*/
                                 // ball.ApplyLinearImpulseToCenter({ x: 9.02, y: -0.4 });
                             }
 
                             /* C => I */
                             {
-                                /* rest: 0.5  (p_ci1) */
+                                /* (p_ci1) rest: 0.5 */
                                 // ball.ApplyLinearImpulseToCenter({ x: 6.5, y: 1.5 });
                                 // setTimeout(() => {
                                 //     setInterval(() => {
@@ -90,7 +90,7 @@ export class Phys {
                                 //     });
                                 // }, 320);
                                 //
-                                /* rest: 0.4  (p_ci2) */
+                                /* (p_ci2) rest: 0.4 */
                                 // ball.ApplyLinearImpulseToCenter({ x: 1, y: 0 });
                                 // setTimeout(() => {
                                 //     setInterval(() => {
@@ -101,35 +101,39 @@ export class Phys {
 
                             /* C => O */
                             {
-                                /* rest: 0.5  (p_co1) */
+                                /* (p_co1) rest: 0.5  */
                                 // ball.ApplyLinearImpulseToCenter({ x: 2.558, y: 0 });
                                 //
-                                /* rest: 0.4  (p_co2) */
+                                /* (p_co2) rest: 0.4 */
                                 // ball.ApplyLinearImpulseToCenter({ x: 11.19, y: -1 });
                                 //
-                                /* rest: 0.4  (p_co3) */
+                                /* (p_co3) rest: 0.4 */
                                 // ball.ApplyLinearImpulseToCenter({ x: 6.16, y: 0 });
                             }
 
                             // OC
                             {
-                                /* rest: 0.4  (p_oc1) */
-                                // ball.ApplyLinearImpulseToCenter({ x: -3.29, y: 0 });
-                                //
-                                /* rest: 0.4  (p_oc2) */
+                                /* (p_oc1) rest: 0.4 */
                                 // ball.ApplyLinearImpulseToCenter({ x: -6.08, y: -1 });
                                 //
-                                /* rest: 0.4  (p_oc3) */
-                                ball.GetFixtureList().SetRestitution(0.3);
-                                ball.ApplyLinearImpulseToCenter({ x: 0, y: -6.32 });
+                                /* (p_oc2) rest: 0.4 */
+                                // ball.GetFixtureList().SetRestitution(0.3);
+                                // ball.ApplyLinearImpulseToCenter({ x: 0, y: -6.32 });
+                                //
+                                /* (p_oc3) rest: 0.58 */
+                                // on case5 ball.GetFixtureList().SetRestitution(0.3)
+                                // ball.ApplyLinearImpulseToCenter({ x: -8.7, y: -0.95 });
                             }
 
                             // OO
                             {
-                                // TEST this
-                                // ball.ApplyLinearImpulseToCenter({ x: -17.45, y: 1 });
+                                /* (p_oo1) rest: 0.5 */
+                                ball.ApplyLinearImpulseToCenter({ x: 10.5, y: 3 });
                                 //
-                                /* rest: 0.5  (p_oo) */
+                                /* rest: 0.5 friction: 0.4  (p_oo2) */
+                                // ball.ApplyLinearImpulseToCenter({ x: -1.295, y: 1.92 });
+                                //
+                                /* (p_oo3) rest: 0.5 */
                                 // ball.ApplyLinearImpulseToCenter({ x: 2, y: -4.8 });
                                 // setTimeout(() => {
                                 //     ball.ApplyLinearImpulseToCenter({ x: 2.16, y: 0 });
@@ -138,8 +142,16 @@ export class Phys {
 
                             // OI
                             {
-                                /* rest: 0.5  (p_oi) */
-                                // ball.ApplyLinearImpulseToCenter({ x: 1.18, y: -2 });
+                                /* (p_oi1) rest: 0.4 */
+                                // ball.ApplyLinearImpulseToCenter({ x: 2, y: 0 });
+                                //
+                                /* (p_oi2) rest: 0.58 */
+                                // on case5 ball.GetFixtureList().SetRestitution(0.39)
+                                // ball.ApplyLinearImpulseToCenter({ x: -4.01, y: 0 });
+                                //
+                                /* (p_oi3) rest: 0.6 */
+                                // on case5 ball.ApplyLinearImpulseToCenter({ x: 1.65, y: 0 });
+                                // ball.ApplyLinearImpulseToCenter({ x: -4, y: 3.5 });
                             }
                         }
                     }

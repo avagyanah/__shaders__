@@ -126,7 +126,7 @@ class App extends PixiApp {
 
         /* UPDATE */
         this.ticker.add(() => {
-            Phys.update();
+            // Phys.update();
 
             TWEEN.update();
 

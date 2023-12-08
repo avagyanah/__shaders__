@@ -119,13 +119,17 @@ export class Board extends Container {
 
         const pinIDs = this.getPinIndexes(directions);
 
-        return [
-            //
-            { id: 0, path: 'p_0' },
-            { id: 2, path: 'p_ci1' },
-            { id: 4, path: 'p_oc2' },
-            // { id: 8, path: 'p_oo' },
-        ];
+        // return [
+        //     //
+        //     { id: 0, path: 'p_0' },
+        //     // { id: 2, path: 'p_cc1' },
+        //     // { id: 4, path: 'p_co2' },
+        //     { id: 1, path: 'p_ci1' },
+        //     { id: 4, path: 'p_oo3' },
+        //     // { id: 8, path: 'p_oi3' },
+        //     // { id: 8, path: 'p_oc3' },
+        //     // { id: 12, path: 'p_cc1' },
+        // ];
 
         // first pin
         result.push({ id: pinIDs[0], path: 'p_0' });
