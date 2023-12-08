@@ -93,7 +93,7 @@ class App extends PixiApp {
         Board.setRisk(risk);
         Board.setMultipliers(multipliers[risk]);
 
-        const row = 12;
+        const row = 8;
         this._board = new Board();
         this._board.position.set(width * 0.5, height * 0.04);
 
@@ -119,7 +119,7 @@ class App extends PixiApp {
         /* ______________________________ */
 
         // setInterval(() => {
-        //     this._board.addBall();
+        //     this._board.addBall(_sample(sequences[row]));
         // }, 0);
 
         this._board.addChild(gr);

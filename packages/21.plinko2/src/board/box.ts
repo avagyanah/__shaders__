@@ -19,7 +19,15 @@ export class Box {
         this._position = position;
 
         this.view = this._createView(multiplier, risk);
-        this.body = this._createBody();
+        // this.body = this._createBody();
+    }
+
+    public get position(): IPoint {
+        return this._position;
+    }
+
+    public get radius(): number {
+        return 0;
     }
 
     public destroy(): void {
@@ -33,7 +41,7 @@ export class Box {
         const { texture, color } = getViewConfig(multiplier, risk);
 
         const sprite = Sprite.from(assets.images[texture]);
-        sprite.anchor.set(0.5, 0);
+        sprite.anchor.set(0.5);
 
         const text = new Text(`${multiplier}`, {
             fontFamily: 'BlenderPro',
@@ -42,12 +50,12 @@ export class Box {
             fontWeight: '900',
         });
         text.height *= 1.08;
-        text.anchor.set(0.5, 0.5);
-        text.position.set(0, 60);
+        text.anchor.set(0.5);
+        text.position.set(0, -4);
 
         const view = new Container();
         view.scale.set(scale);
-        view.position.set(pos.x, pos.y);
+        view.position.set(pos.x, pos.y - 40 * scale);
         view.addChild(sprite, text);
 
         // TEMP

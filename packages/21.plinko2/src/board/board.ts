@@ -105,13 +105,6 @@ export class Board extends Container {
         // return [
         //     //
         //     { id: 0, path: 'p_0' },
-        //     // { id: 2, path: 'p_cc1' },
-        //     // { id: 4, path: 'p_co2' },
-        //     { id: 1, path: 'p_ci1' },
-        //     { id: 4, path: 'p_oo3' },
-        //     // { id: 8, path: 'p_oi3' },
-        //     // { id: 8, path: 'p_oc3' },
-        //     // { id: 12, path: 'p_cc1' },
         // ];
 
         // first pin
@@ -132,7 +125,10 @@ export class Board extends Container {
         }
 
         // result box
-        // result.push({ id: _last(pinIDs) - this._pins.length, path: 'p_cc' });
+        result.push({
+            id: _last(pinIDs),
+            path: _sample(['p_cc1', 'p_cc2']),
+        });
 
         return result;
     };
@@ -158,10 +154,8 @@ export class Board extends Container {
         for (let i = 0; i < pairPinPath.length; i++) {
             const { path: pathID, id: pinID } = pairPinPath[i];
 
-            // const dest = i === pairPinPath.length - 1 ? this._boxes[pinID] : this._pins[pinID];
-
-            const dest = this._pins[pinID];
-            const destPos = dest.view.position;
+            const dest = i === pairPinPath.length - 1 ? this._boxes[pinID - this._pins.length] : this._pins[pinID];
+            const destPos = dest.position;
 
             const dirX = Math.sign(destPos.x - ballPos.x);
 
@@ -183,7 +177,7 @@ export class Board extends Container {
                     const { 0: xo, 1: yo, 2: ro } = points[p];
 
                     const x = dirX * xo * dx + ballPos.x;
-                    const y = yo * dy + ballPos.y - (ballRad + ballRad);
+                    const y = yo * dy + ballPos.y - 2 * ballRad;
                     const r = dirX * ro;
 
                     result[pinID].push([x, y, r]);
@@ -229,6 +223,7 @@ export class Board extends Container {
     }
 
     private _onBallCollision(id: string, event: CollisionEntry): void {
+        return;
         const { pinID, row, col } = event;
 
         const pin = this._getPin(pinID, row, col);
@@ -236,9 +231,9 @@ export class Board extends Container {
     }
 
     private _onBallComplete(id: string): void {
-        // const ball = this._balls.find((ball) => ball.id === id);
-        // this._balls.splice(this._balls.indexOf(ball), 1);
-        // ball.destroy();
+        const ball = this._balls.find((ball) => ball.id === id);
+        this._balls.splice(this._balls.indexOf(ball), 1);
+        ball.destroy();
     }
 
     private _getPin(fromPin: PinID, row: number, col: number): Pin {
@@ -313,15 +308,15 @@ export class Board extends Container {
 
     private _createBoxes(): void {
         const boxScale = Math.pow(scale, 0.55);
-        const boxGapScale = Math.pow(scale, 1.4);
+        // const boxGapScale = Math.pow(scale, 1.4);
 
         for (let i = 0; i <= this._rows; i++) {
             const x = (i - this._rows / 2) * gapX;
-            const y = this._rows * gapY + padTop;
+            const y = (this._rows - 1) * gapY + padTop + 150 * boxScale;
 
             const box = new Box(
                 this._boxes.length,
-                new Point(x, y - 120 * boxGapScale),
+                new Point(x, y),
                 boxScale,
                 Board._multipliers[this._rows][i],
                 Board._risk

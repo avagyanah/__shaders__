@@ -38,6 +38,14 @@ export class Pin {
         this.body = this._createBody();
     }
 
+    public get position(): IPoint {
+        return this._position;
+    }
+
+    public get radius(): number {
+        return this._radius;
+    }
+
     public get posType(): PinPositionType {
         return this._posType;
     }
