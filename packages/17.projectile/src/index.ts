@@ -1,32 +1,7 @@
 import TWEEN from '@tweenjs/tween.js';
+import { Camera3d, Container3d, Sprite3d } from 'pixi-projection';
+import { Filter, Texture } from 'pixi.js';
 import { PixiApp } from '../../../shared/pixi';
-import {
-    Container3d,
-    SimpleMesh3d2d,
-    Camera3d,
-    AFFINE,
-    ProjectionSurface,
-    Projection3d,
-    Sprite3d,
-    Sprite2d,
-    Sprite2s,
-} from 'pixi-projection';
-import {
-    Container,
-    Filter,
-    Geometry,
-    Graphics,
-    Mesh,
-    MeshMaterial,
-    PlaneGeometry,
-    Program,
-    Rectangle,
-    Shader,
-    Sprite,
-    Texture,
-    TextureUvs,
-    Transform,
-} from 'pixi.js';
 import { assets } from './assets';
 
 window.addEventListener('load', () => {
@@ -96,7 +71,7 @@ class App extends PixiApp {
         const frag = assets.shaders.default.frag;
         const filter = new Filter(vert, frag);
         filter.resolution = window.devicePixelRatio;
-        // scene.filters = [filter];
+        scene.filters = [filter];
 
         const cells: Sprite3d[] = [];
         for (let r = 0; r < 6; r++) {

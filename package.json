@@ -31,7 +31,9 @@
         "start:skew": "npm run start -w skew",
         "start:box2d": "npm run start -w box2d",
         "start:plinko": "npm run start -w plinko",
-        "start:plinko2": "npm run start -w plinko2"
+        "start:plinko2": "npm run start -w plinko2",
+        "start:clouds": "npm run start -w clouds",
+        "start:bets-deck": "npm run start -w bets-deck"
     },
     "devDependencies": {
         "@types/matter-js": "^0.19.2",
