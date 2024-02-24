@@ -1,6 +1,5 @@
 import TWEEN from '@tweenjs/tween.js';
 import { PixiApp } from '../../../shared/pixi';
-import { BetsDeck } from './bets-deck';
 
 window.addEventListener('load', async () => {
     window.globals = { pixiApp: new App() };
@@ -13,10 +12,6 @@ window.addEventListener('load', async () => {
 
 class App extends PixiApp {
     public async init(): Promise<void> {
-        const betsDeck = new BetsDeck();
-        betsDeck.position.set(200, 200);
-        this.stage.addChild(betsDeck);
-
         //
         /* UPDATE */
         this.ticker.add(() => {

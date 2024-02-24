@@ -1,21 +1,17 @@
 import type { Container, DisplayObject, Mesh, MeshMaterial, Shader } from 'pixi.js';
 import { Application, Graphics, Ticker, UPDATE_PRIORITY } from 'pixi.js';
-import { getResolution } from './utils';
+import { getElementById, getResolution } from './utils';
 import { DrawCallsPanel, FPSPanel, MemoryPanel, Stats } from '@gameastic/stats';
 
 export abstract class PixiApp extends Application {
     public constructor() {
-        const canvas = document.createElement('canvas');
-
-        const off = canvas.transferControlToOffscreen();
-
         super({
             sharedTicker: true,
             backgroundAlpha: 1,
             backgroundColor: 0x343434,
             hello: true,
             resolution: getResolution(),
-            view: off,
+            view: getElementById<HTMLCanvasElement>('game_canvas'),
         });
 
         window.addEventListener('resize', this.resize);

@@ -1,30 +1,55 @@
-import TWEEN from '@tweenjs/tween.js';
-import { PixiApp } from '../../../shared/pixi';
-import { WheelGameComponent } from '@ancientgaming/game-wheel-component';
+import { Color, Container, Sprite, Texture, Ticker, autoDetectRenderer } from 'pixi.js';
+import { getElementById, getResolution } from '../../../shared/utils';
+import TWEEN, { Tween, Easing } from '@tweenjs/tween.js';
 
 window.addEventListener('load', async () => {
-    window.globals = { pixiApp: new App() };
-    await window.globals.pixiApp.init();
+    new App();
 });
 
-/* MATERIAL */
-// const vertSrc = assets.shaders.default.vert;
-// const fragSrc = assets.shaders.default.frag;
+class App {
+    public constructor() {
+        const canvas = <HTMLCanvasElement>getElementById('game_canvas');
+        const offscreenCanvas = canvas.transferControlToOffscreen();
 
-class App extends PixiApp {
-    public async init(): Promise<void> {
-        /* UPDATE */
-        this.ticker.add(() => {
-            TWEEN.update();
-            //
+        const renderer = autoDetectRenderer({
+            backgroundAlpha: 0,
+            backgroundColor: 0xff0000,
+            hello: true,
+            antialias: true,
+            view: offscreenCanvas,
+            resolution: getResolution(),
+            clearBeforeRender: true,
         });
 
-        /* RESIZE */
-        this.renderer.on('resize', this._onResize, this);
-        this._onResize();
-    }
+        const stage = new Container();
 
-    private _onResize(): void {
-        //
+        Ticker.shared.add(() => {
+            renderer.render(stage);
+            TWEEN.update();
+        });
+
+        const view = Sprite.from(Texture.WHITE);
+        view.anchor.set(0.5);
+        view.scale.set(30);
+        stage.addChild(view);
+
+        const windowResize = (width, height): void => {
+            renderer.resize(width, height);
+            renderer.view.style.width = `${width}px`;
+            renderer.view.style.height = `${height}px`;
+        };
+
+        const rendererResize = (): void => {
+            const { width, height } = renderer.screen;
+
+            view.position.set(width * 0.5, height * 0.5);
+        };
+
+        window.addEventListener('resize', () => {
+            windowResize(window.innerWidth, window.innerHeight);
+        });
+        renderer.on('resize', rendererResize, this);
+
+        windowResize(window.innerWidth, window.innerHeight);
     }
 }

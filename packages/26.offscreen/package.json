@@ -2,11 +2,12 @@
     "name": "offscreen",
     "version": "1.0.0",
     "license": "UNLICENSED",
-    "source": "src/index.ts",
+    "source": "src/index.html",
     "main": "dist/index.js",
     "private": true,
     "scripts": {
-        "start": "webpack-dev-server --config webpack.config.js"
+        "start": "webpack-dev-server --config webpack.config.js",
+        "build": "webpack"
     },
     "devDependencies": {},
     "dependencies": {}
