@@ -1,11 +1,13 @@
 import { ScrollBox } from '@pixi/ui';
 import { Easing, Tween } from '@tweenjs/tween.js';
-import { Color, Container, Text } from 'pixi.js';
+import { Color, Container, RenderTexture, Sprite, TARGETS, Text, Texture } from 'pixi.js';
 
 export class BetsDeck extends Container {
     private _scrollGroup!: ScrollBox;
     private _betsGroup!: Container;
     private _tween: Tween<Container>;
+    private _renderTexture: RenderTexture;
+    private _sprite: Sprite;
 
     public constructor() {
         super();
@@ -22,6 +24,27 @@ export class BetsDeck extends Container {
         });
         this.addChild(this._scrollGroup);
 
+        this._sprite = Sprite.from(Texture.EMPTY);
+        this._renderTexture = RenderTexture.create({ target: TARGETS.TEXTURE_2D });
+        this.addChild(this._sprite);
+
+        for (let i = 1; i < 4; i++) {
+            this._renderTexture.resize(200, i * 60);
+
+            const text = new Text(`${i}x`, {
+                fontFamily: 'DigitalNumbers',
+                fontWeight: 'bold',
+                fontSize: 20,
+                fill: 0xffffff,
+            });
+
+            text.y = i * 40;
+
+            window.globals.pixiApp.renderer.render(text, { renderTexture: this._renderTexture });
+            this._sprite.texture = this._renderTexture;
+        }
+
+        return;
         const delay = 200;
 
         this._add(6, 0xffffff, true);

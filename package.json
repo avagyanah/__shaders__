@@ -33,7 +33,11 @@
         "start:plinko": "npm run start -w plinko",
         "start:plinko2": "npm run start -w plinko2",
         "start:clouds": "npm run start -w clouds",
-        "start:bets-deck": "npm run start -w bets-deck"
+        "start:bets-deck": "npm run start -w bets-deck",
+        "start:hypedrop-wheel": "npm run start -w hypedrop-wheel",
+        "start:ticker": "npm run start -w ticker",
+        "build:ticker": "npm run build -w ticker",
+        "start:offscreen": "npm run start -w offscreen"
     },
     "devDependencies": {
         "@types/matter-js": "^0.19.2",
@@ -53,6 +57,7 @@
         "webpack-merge": "^5.9.0"
     },
     "dependencies": {
+        "@ancientgaming/game-wheel-component": "^0.0.5",
         "@box2d/core": "^0.10.0",
         "@gameastic/box2d-testbed": "^1.0.0",
         "@gameastic/stats": "1.0.4",
@@ -61,12 +66,13 @@
         "@tweenjs/tween.js": "^21.0.0",
         "cannon-es": "^0.20.0",
         "cannon-es-debugger": "^1.0.0",
-        "gsap": "^3.11.5",
+        "gsap": "^3.12.5",
         "matter-js": "^0.19.0",
         "pixi-projection": "^1.0.0",
         "pixi-stats": "^1.2.2",
-        "pixi.js": "^7.3.1",
+        "pixi.js": "^7.4.0",
         "three": "^0.152.2",
-        "tweedle.js": "^2.1.0"
+        "tweedle.js": "^2.1.0",
+        "vite": "^5.1.4"
     }
 }

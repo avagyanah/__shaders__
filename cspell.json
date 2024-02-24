@@ -11,6 +11,8 @@
         "plinko",
         "tweenjs",
         "gsap",
-        "coso"
+        "coso",
+        "hypeup",
+        "hypedrop"
     ]
 }
