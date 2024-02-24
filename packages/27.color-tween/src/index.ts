@@ -1,37 +1,13 @@
-import TWEEN, { Group, Tween } from '@tweenjs/tween.js';
-import { PixiApp } from '../../../shared/pixi';
-import { Color, Container, Graphics, Sprite, Texture, Ticker, autoDetectRenderer, settings } from 'pixi.js';
-import { Ticker1 } from './ticker1';
-import { assets } from './assets';
-import gsap, { Linear } from 'gsap';
+import { Color, Container, Sprite, Texture, Ticker, autoDetectRenderer } from 'pixi.js';
 import { getElementById, getResolution } from '../../../shared/utils';
-import { Ticker as PhaserTicker } from './phaser/Ticker';
-import { FPSPanel, Stats } from '@gameastic/stats';
+import TWEEN, { Tween, Easing } from '@tweenjs/tween.js';
 
 window.addEventListener('load', async () => {
     new App();
 });
 
-settings.PREFER_ENV = 1;
-
 class App {
-    private _sprite: Sprite;
-
     public constructor() {
-        /* STATE */
-        const stats = new Stats({
-            css: 'bottom:0;left:0;transform-origin:left top;cursor:pointer;opacity:0.9',
-            renderStep: 500,
-        });
-
-        document.body.appendChild(stats.dom);
-
-        stats.addPanel(new FPSPanel('FPS', '#0ff', '#002'));
-        stats.dom.style.transform = `scale(${2})`;
-
-        // stats.showPanel(0);
-        /* ------- */
-
         const canvas = <HTMLCanvasElement>getElementById('game_canvas');
 
         const renderer = autoDetectRenderer({
@@ -46,71 +22,49 @@ class App {
 
         const stage = new Container();
 
-        Ticker.shared.autoStart = false;
-        Ticker.shared.stop();
-
-        Ticker.system.autoStart = false;
-        Ticker.system.stop();
-
-        const ticker = new PhaserTicker({
-            target: 60,
-            limit: 80,
-            min: 60,
-        });
-
-        // let scaleMin = 0.2;
-        // let scaleMax = 1.3;
-        // let vector = -1;
-        // let scale = 1;
-
-        const view = new Graphics();
-        view.beginFill(0xffffff, 1);
-        view.drawRect(0, 0, 500, 500);
-        stage.addChild(view);
-        view.pivot.set(250, 250);
-        // const view = Sprite.from(assets.images.bg);
-        // view.anchor.set(0.5);
-        // stage.addChild(view);
-
-        ticker.start((elapsed, delta) => {
-            view.rotation += 0.0012 * delta;
-
-            Ticker.shared.update(elapsed);
-            Ticker.system.update(elapsed);
-
+        Ticker.shared.add(() => {
             renderer.render(stage);
-
-            stats.update();
+            TWEEN.update();
         });
 
-        // const colorFrom = 0xff0000;
-        // const colorTo = 0x0000ff;
-        // const c = new Color(colorFrom);
-        // const cfrom = new Color(colorFrom);
-        // const cto = new Color(colorTo);
-        // const rgb = c.toRgb();
-        // const rgbFrom = cfrom.toRgb();
-        // const rgbTo = cto.toRgb();
+        const view = Sprite.from(Texture.WHITE);
+        view.anchor.set(0.5);
+        view.scale.set(30);
+        stage.addChild(view);
 
-        // console.warn(c.toHex());
-        // const cc = new Color();
+        const tweenColor = (
+            from: number,
+            to: number,
+            duration: number,
+            ease: (amount: number) => number,
+            callback: (color: number) => void
+        ): void => {
+            const color = new Color();
 
-        // new Tween(rgb)
-        //     .to(
-        //         {
-        //             r: rgbTo.r,
-        //             g: rgbTo.g,
-        //             b: rgbTo.b,
-        //         },
-        //         6000
-        //     )
-        //     .onUpdate(() => {
-        //         cc.setValue({ r: rgb.r * 256, g: rgb.g * 256, b: rgb.b * 256 });
-        //         // console.log(cc.toHex());
+            const fromRGB = color.setValue(from).toRgb();
+            const toRGB = color.setValue(to).toRgb();
 
-        //         document.body.style.backgroundColor = cc.toHex();
-        //     })
-        //     .start();
+            const tween = new Tween(fromRGB);
+            tween.to(
+                {
+                    r: toRGB.r,
+                    g: toRGB.g,
+                    b: toRGB.b,
+                },
+                duration
+            );
+            tween.onUpdate(({ r, g, b }) => {
+                color.setValue({ r: r * 256, g: g * 256, b: b * 256 });
+
+                callback(color.toNumber());
+            });
+            tween.easing(ease);
+            tween.start();
+        };
+
+        tweenColor(0x00ff00, 0xff00ff, 4000, Easing.Cubic.Out, (color) => {
+            view.tint = color;
+        });
 
         const windowResize = (width, height): void => {
             renderer.resize(width, height);

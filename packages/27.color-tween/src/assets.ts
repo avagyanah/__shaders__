@@ -1,8 +1,6 @@
 export const assets = {
     images: {
         bg: require('../assets/images/bg.jpg'),
-        snake: require('../assets/images/snake.png'),
-        clouds: require('../assets/images/clouds.png'),
     },
 
     shaders: {

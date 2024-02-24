@@ -37,7 +37,8 @@
         "start:hypedrop-wheel": "npm run start -w hypedrop-wheel",
         "start:ticker": "npm run start -w ticker",
         "build:ticker": "npm run build -w ticker",
-        "start:offscreen": "npm run start -w offscreen"
+        "start:offscreen": "npm run start -w offscreen",
+        "start:color-tween": "npm run start -w color-tween"
     },
     "devDependencies": {
         "@types/matter-js": "^0.19.2",

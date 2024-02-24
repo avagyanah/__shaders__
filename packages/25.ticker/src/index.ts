@@ -7,7 +7,7 @@ window.addEventListener('load', async () => {
     new App();
 });
 
-settings.PREFER_ENV = 1;
+settings.PREFER_ENV = 2;
 
 class App {
     public constructor() {
