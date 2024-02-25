@@ -1,7 +1,7 @@
+import { FPSPanel, Stats } from '@gameastic/stats';
 import { Container, Graphics, Ticker, autoDetectRenderer, settings } from 'pixi.js';
 import { getElementById, getResolution } from '../../../shared/utils';
 import { Ticker as PhaserTicker } from './phaser/Ticker';
-import { FPSPanel, Stats } from '@gameastic/stats';
 
 window.addEventListener('load', async () => {
     new App();

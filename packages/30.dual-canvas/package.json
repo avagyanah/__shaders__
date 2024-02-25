@@ -1,0 +1,14 @@
+{
+    "name": "dual-canvas",
+    "version": "1.0.0",
+    "license": "UNLICENSED",
+    "source": "src/index.html",
+    "main": "dist/index.js",
+    "private": true,
+    "scripts": {
+        "start": "webpack-dev-server --config webpack.config.js",
+        "build": "webpack"
+    },
+    "devDependencies": {},
+    "dependencies": {}
+}

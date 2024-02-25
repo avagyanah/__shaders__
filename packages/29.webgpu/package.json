@@ -1,0 +1,16 @@
+{
+    "name": "webgpu",
+    "version": "1.0.0",
+    "license": "UNLICENSED",
+    "source": "src/index.html",
+    "main": "dist/index.js",
+    "private": true,
+    "scripts": {
+        "start": "webpack-dev-server --config webpack.config.js",
+        "build": "webpack"
+    },
+    "devDependencies": {},
+    "dependencies": {
+        "pixi.js": "^8.0.0-rc.10"
+    }
+}

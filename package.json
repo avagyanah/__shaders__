@@ -38,7 +38,11 @@
         "start:ticker": "npm run start -w ticker",
         "build:ticker": "npm run build -w ticker",
         "start:offscreen": "npm run start -w offscreen",
-        "start:color-tween": "npm run start -w color-tween"
+        "start:offscreen2": "npm run start -w offscreen2",
+        "start:color-tween": "npm run start -w color-tween",
+        "start:webgpu": "npm run start -w webgpu",
+        "start:dual-canvas": "npm run start -w dual-canvas",
+        "start:phaser-ticker": "npm run start -w phaser-ticker"
     },
     "devDependencies": {
         "@types/matter-js": "^0.19.2",

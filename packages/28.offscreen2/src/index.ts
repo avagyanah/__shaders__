@@ -64,24 +64,22 @@ class App {
         //     // view.rotation += 0.0012 * delta;
         // };
 
-        // new TimeStep({
-        //     limit: 70,
-        //     target: 60,
-        //     min: 30,
-        // }).start((elapsed, delta) => {
-        //     view.rotation += 0.012;
-        //     renderer.render(stage);
-        //     stats.update();
-        // });
-        const stage = new Container();
-
-        // Ticker.system.autoStart = false;
-        Ticker.shared.maxFPS = 70;
-        Ticker.shared.add(() => {
-            view.rotation += 0.005;
+        new TimeStep({
+            limit: 40,
+            target: 60,
+            min: 30,
+        }).start((elapsed, delta) => {
+            view.rotation += 0.012;
             renderer.render(stage);
             stats.update();
         });
+        const stage = new Container();
+
+        // Ticker.shared.maxFPS = 70;
+        // Ticker.shared.add(() => {
+        //     view.rotation += 0.0012 * Ticker.shared.deltaMS;
+        //     renderer.render(stage);
+        // });
 
         const view = Sprite.from(Texture.WHITE);
         view.anchor.set(0.5);
