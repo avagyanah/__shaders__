@@ -49,21 +49,23 @@ class App {
             speed: 1,
         });
 
-        const task = gameTimer.addTask({ delay: 100, speed: 0.1, repeat: 10 });
-        task.onStart.connect(() => {
-            console.log('start');
+        const task = gameTimer.addTask({ delay: 200, speed: 1, repeat: 10 });
+        task.events.on('start', () => {
+            console.log('start: ');
         });
-        task.onRepeat.connect(() => {
-            console.log('repeat');
+        task.events.on('repeat', () => {
+            console.log('repeat: ');
         });
-        task.onComplete.connect(() => {
-            console.log('complete');
+        task.events.on('complete', () => {
+            console.log('complete: ');
         });
-        void task;
+        task.events.on('dispose', () => {
+            console.log('dispose: ');
+        });
 
-        // .on('complete', () => {
-        //     console.log('mta');
-        // });
+        setTimeout(() => {
+            task.dispose();
+        }, 1000);
 
         const callback = (time, delta): void => {
             // console.log(gameTimer.elapsedMS);

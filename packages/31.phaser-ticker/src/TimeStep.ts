@@ -1,4 +1,4 @@
-import { Signal } from 'typed-signals';
+import { EventEmitter } from 'eventemitter3';
 
 const NOOP = (): void => {
     //
@@ -10,6 +10,50 @@ export interface ITimeStepConfig {
 }
 
 export type IAnimCallback = (time: number, delta: number) => void;
+
+class RequestAnimationFrame {
+    public isRunning: boolean;
+    public timeOutID: number;
+    public callback: FrameRequestCallback;
+
+    public constructor(callback: FrameRequestCallback = NOOP) {
+        this.isRunning = false;
+        this.callback = callback ?? NOOP;
+    }
+
+    public setCallback(callback: FrameRequestCallback): void {
+        this.callback = callback;
+    }
+
+    public start(): void {
+        if (this.isRunning) {
+            return;
+        }
+
+        this.isRunning = true;
+        this.timeOutID = window.requestAnimationFrame(this._step);
+    }
+
+    public stop(): void {
+        this.isRunning = false;
+
+        window.cancelAnimationFrame(this.timeOutID);
+    }
+
+    public destroy(): void {
+        this.stop();
+
+        this.callback = NOOP;
+    }
+
+    private readonly _step = (time: number): void => {
+        this.callback(time);
+
+        if (this.isRunning) {
+            this.timeOutID = window.requestAnimationFrame(this._step);
+        }
+    };
+}
 
 export class TimeStep {
     private _raf: RequestAnimationFrame;
@@ -155,17 +199,17 @@ export class TimeStep {
     public addTask(config: ITickerTaskConfig): TickerTask {
         const task = new TickerTask(config);
 
-        task.onComplete.connect(this.removeTask);
-        task.onDispose.connect(this.removeTask);
+        task.events.on('complete', this.removeTask, this);
+        task.events.on('dispose', this.removeTask, this);
 
         this.add(task.update);
 
         return task;
     }
 
-    public removeTask = (task: TickerTask): void => {
+    public removeTask(task: TickerTask): void {
         this.remove(task.update);
-    };
+    }
 
     public destroy(): void {
         this.stop();
@@ -243,12 +287,15 @@ interface ITickerTaskConfig {
     speed?: number;
 }
 
-export class TickerTask {
-    public onStart: Signal<(task: TickerTask) => void> = new Signal();
-    public onRepeat: Signal<(task: TickerTask) => void> = new Signal();
-    public onComplete: Signal<(task: TickerTask) => void> = new Signal();
-    public onDispose: Signal<(task: TickerTask) => void> = new Signal();
+type TickerTaskEvents = {
+    start: [task: TickerTask];
+    repeat: [task: TickerTask];
+    complete: [task: TickerTask];
+    dispose: [task: TickerTask];
+};
 
+export class TickerTask {
+    public events: EventEmitter<TickerTaskEvents>;
     public speed: number;
     public paused: boolean;
 
@@ -267,6 +314,7 @@ export class TickerTask {
 
         this.speed = speed;
         this.paused = false;
+        this.events = new EventEmitter();
     }
 
     public get running(): boolean {
@@ -294,7 +342,7 @@ export class TickerTask {
     }
 
     public dispose(): void {
-        this.onDispose.emit(this);
+        this.events.emit('dispose', this);
         this._dispose();
     }
 
@@ -304,7 +352,7 @@ export class TickerTask {
         }
 
         if (!this._started) {
-            this.onStart.emit(this);
+            this.events.emit('start', this);
             this._started = true;
         }
 
@@ -321,14 +369,14 @@ export class TickerTask {
 
     private _processComplete(): void {
         this._remaining = 0;
-        this.onComplete.emit(this);
+        this.events.emit('complete', this);
         this._dispose();
     }
 
     private _processRepeat(): void {
         this._remaining = this._config.delay;
         this._repeat--;
-        this.onRepeat.emit(this);
+        this.events.emit('repeat', this);
     }
 
     private _dispose(): void {
@@ -336,54 +384,6 @@ export class TickerTask {
         this._repeat = 0;
 
         this.update = NOOP;
-
-        this.onStart.disconnectAll();
-        this.onRepeat.disconnectAll();
-        this.onComplete.disconnectAll();
-        this.onDispose.disconnectAll();
+        this.events.removeAllListeners();
     }
-}
-
-class RequestAnimationFrame {
-    public isRunning: boolean;
-    public timeOutID: number;
-    public callback: FrameRequestCallback;
-
-    public constructor(callback: FrameRequestCallback = NOOP) {
-        this.isRunning = false;
-        this.callback = callback ?? NOOP;
-    }
-
-    public setCallback(callback: FrameRequestCallback): void {
-        this.callback = callback;
-    }
-
-    public start(): void {
-        if (this.isRunning) {
-            return;
-        }
-
-        this.isRunning = true;
-        this.timeOutID = window.requestAnimationFrame(this._step);
-    }
-
-    public stop(): void {
-        this.isRunning = false;
-
-        window.cancelAnimationFrame(this.timeOutID);
-    }
-
-    public destroy(): void {
-        this.stop();
-
-        this.callback = NOOP;
-    }
-
-    private readonly _step = (time: number): void => {
-        this.callback(time);
-
-        if (this.isRunning) {
-            this.timeOutID = window.requestAnimationFrame(this._step);
-        }
-    };
 }
