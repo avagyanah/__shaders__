@@ -49,6 +49,22 @@ class App {
             speed: 1,
         });
 
+        const task = gameTimer.addTask({ delay: 100, speed: 0.1, repeat: 10 });
+        task.onStart.connect(() => {
+            console.log('start');
+        });
+        task.onRepeat.connect(() => {
+            console.log('repeat');
+        });
+        task.onComplete.connect(() => {
+            console.log('complete');
+        });
+        void task;
+
+        // .on('complete', () => {
+        //     console.log('mta');
+        // });
+
         const callback = (time, delta): void => {
             // console.log(gameTimer.elapsedMS);
 
